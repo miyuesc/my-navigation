@@ -1,28 +1,57 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <my-slider :mini="isMiniSlider" />
+    <my-header :mini="isMiniSlider" @change-slider="isMiniSlider = !isMiniSlider" />
+    <div class="main-container" :class="{'full-container': isMiniSlider}">
+      <search-box />
+      <navigation-box />
+    </div>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import MySlider from "@/components/MySlider";
+import MyHeader from "@/components/MyHeader";
+import SearchBox from "@/components/SearchBox";
+import NavigationBox from "@/components/NavigationBox";
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    NavigationBox,
+    SearchBox,
+    MySlider,
+    MyHeader
+  },
+  data() {
+    return {
+      isMiniSlider: false
+    }
   }
 }
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+html,
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  background: #f9f9f9;
+}
+.main-container {
+  box-sizing: border-box;
+  padding: 80px 0 16px 256px;
+  width: 100vw;
+  height: 100vh;
+  overflow: scroll;
+  overflow-x: hidden;
+  transition: all ease 0.32s;
+}
+.main-container.full-container {
+  padding: 64px 0 16px 80px;
+}
+.main-container * {
+  transition: all ease 0.32s;
 }
 </style>
