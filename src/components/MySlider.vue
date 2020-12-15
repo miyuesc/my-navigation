@@ -2,7 +2,7 @@
   <slider class="my-slider" :class="{'is-open': !mini}">
     <div class="logo"></div>
     <div class="nav-classification">
-      <a class="nav-classification-item" v-for="i in nav" :key="i.name" :href="'#' + i.id">
+      <a class="nav-classification-item" :class="{'is-active': selected === i.id}" v-for="i in nav" :key="i.name" @click.stop="scrollToTarget(i)">
         <div class="nav-classification-item__ico">
           <i class="iconfont" :class="i.ico"></i>
         </div>
@@ -20,12 +20,20 @@ export default {
   },
   data() {
     return {
-      nav: []
+      nav: [],
+      selected: ""
     }
   },
   created() {
     console.log(window.bookmarks);
     this.nav = window.bookmarks.map(i => ({ico: i.ico, name: i.name, herf: i.heaf, id: i.id}));
+  },
+  methods: {
+    scrollToTarget(target) {
+      let targetEl = document.getElementById(target.id);
+      this.selected = target.id;
+      this.$emit("scroll-top", targetEl.offsetTop);
+    }
   }
 }
 </script>
@@ -37,8 +45,9 @@ export default {
   top: 0;
   bottom: 0;
   width: 64px;
-  box-shadow: 2px 2px 2px #dddddd;
+  box-shadow: 6px 0 10px #f0f0f0;
   transition:  all ease 0.32s;
+  background: #f9f9f9;
 }
 .my-slider.is-open {
   width: 240px;
@@ -62,11 +71,16 @@ export default {
   box-sizing: border-box;
   padding: 0 16px;
   text-decoration: none;
+  transition:  all ease 0.12s;
 }
 .nav-classification-item:hover {
   cursor: pointer;
 }
 .nav-classification-item:hover > * {
+  color: coral;
+  transition:  all ease 0.12s;
+}
+.nav-classification-item.is-active > * {
   color: coral;
 }
 .nav-classification-item__name {

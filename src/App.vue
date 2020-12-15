@@ -1,8 +1,8 @@
 <template>
   <div id="app">
-    <my-slider :mini="isMiniSlider" />
+    <my-slider :mini="isMiniSlider" @scroll-top="scrollToTargetType" />
     <my-header :mini="isMiniSlider" @change-slider="isMiniSlider = !isMiniSlider" />
-    <div class="main-container" :class="{'full-container': isMiniSlider}">
+    <div ref="mainContainer" class="main-container" :class="{'full-container': isMiniSlider}">
       <search-box />
       <navigation-box />
     </div>
@@ -27,6 +27,12 @@ export default {
     return {
       isMiniSlider: false
     }
+  },
+  methods: {
+    scrollToTargetType(top) {
+      console.log(this.$refs.mainContainer);
+      this.$refs.mainContainer.scrollTo({top: top - 64, behavior: "smooth"});
+    }
   }
 }
 </script>
@@ -37,11 +43,11 @@ body {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  background: #f9f9f9;
+  background: #eaeaea;
 }
 .main-container {
   box-sizing: border-box;
-  padding: 80px 0 16px 256px;
+  padding: 80px 16px 16px 256px;
   width: 100vw;
   height: 100vh;
   overflow: scroll;
@@ -49,7 +55,7 @@ body {
   transition: all ease 0.32s;
 }
 .main-container.full-container {
-  padding: 64px 0 16px 80px;
+  padding: 80px 16px 16px 80px;
 }
 .main-container * {
   transition: all ease 0.32s;
