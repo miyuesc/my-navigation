@@ -1,5 +1,5 @@
 <template>
-  <slider class="my-slider" :class="{'is-open': !mini}">
+  <div class="my-slider" :class="{'is-open': !mini}">
     <div class="logo"></div>
     <div class="nav-classification">
       <a class="nav-classification-item" :class="{'is-active': selected === i.id}" v-for="i in nav" :key="i.name" @click.stop="scrollToTarget(i)">
@@ -9,7 +9,7 @@
         <div class="nav-classification-item__name">{{ i.name }}</div>
       </a>
     </div>
-  </slider>
+  </div>
 </template>
 
 <script>
@@ -25,8 +25,10 @@ export default {
     }
   },
   created() {
-    console.log(window.bookmarks);
-    this.nav = window.bookmarks.map(i => ({ico: i.ico, name: i.name, herf: i.heaf, id: i.id}));
+    const bookmarks = localStorage.getItem("bookmarks");
+    if (bookmarks) {
+      this.nav = JSON.parse(bookmarks);
+    }
   },
   methods: {
     scrollToTarget(target) {

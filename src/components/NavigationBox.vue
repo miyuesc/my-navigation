@@ -6,8 +6,11 @@
       <div class="navigation-item__body">
         <div class="favorite-item" v-for="fi in item.children" :key="fi.name" @click="turnToTarget(fi)">
           <div class="favorite-item__icon">
-            <img v-if="!!fi.icon" class="favorite-item__icon-img" :src="fi.icon" alt="" />
-            <div v-else class="favorite-item__icon-text">{{ fi.name.substring(0, 1) }}</div>
+            <div v-if="!fi.type" class="favorite-item__icon-text">{{ fi.name.substring(0, 1) }}</div>
+            <img v-if="fi.type === 'image'" class="favorite-item__icon-img" :src="fi.icon" alt="" />
+            <svg v-if="fi.type === 'icon'" class="iconfont" aria-hidden="true">
+              <use v-bind="{'xlink:href': `#${fi.icon}`}"></use>
+            </svg>
           </div>
           <div class="favorite-item__title">{{ fi.name }}</div>
           <div class="favorite-item__href">{{ fi.href }}</div>
@@ -26,7 +29,10 @@ export default {
     }
   },
   created() {
-    this.bookmarks = window.bookmarks;
+    const bookmarks = localStorage.getItem("bookmarks");
+    if (bookmarks) {
+      this.bookmarks = JSON.parse(bookmarks);
+    }
   },
   methods: {
     turnToTarget(target) {
@@ -72,29 +78,40 @@ export default {
   box-sizing: border-box;
   background: #ffffff;
   box-shadow: 0 0 20px -5px rgba(158,158,158,.2);
+  transition: all ease 0.2s;
 }
 .favorite-item:hover {
   cursor: pointer;
+  transform: translateY(-10px);
 }
 .favorite-item__icon {
   grid-row-start: 1;
   grid-row-end: 3;
-  border-radius: 50%;
-  overflow: hidden;
 }
 .favorite-item__icon > * {
-  width: 100%;
-  height: 100%;
   max-width: 64px;
   max-height: 64px;
 }
+.favorite-item__icon .favorite-item__icon-ico {
+  display: inline-flex;
+  font-size: 32px;
+  justify-content: center;
+  align-items: center;
+}
+.favorite-item__icon .favorite-item__icon-img {
+  width: 64px;
+  height: 64px;
+}
 .favorite-item__icon .favorite-item__icon-text {
+  width: 100%;
+  height: 100%;
   display: inline-flex;
   font-size: 32px;
   justify-content: center;
   align-items: center;
   background: #5f9ea0;
   color: #f9f9f9;
+  border-radius: 50%;
 }
 .favorite-item__title,
 .favorite-item__href {
