@@ -239,3 +239,7 @@ window.bookmarks = [
         }]
     }
 ];
+
+export default {
+    bookmarks: window.bookmarks
+}

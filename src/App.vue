@@ -30,7 +30,6 @@ export default {
   },
   methods: {
     scrollToTargetType(top) {
-      console.log(this.$refs.mainContainer);
       this.$refs.mainContainer.scrollTo({top: top - 64, behavior: "smooth"});
     }
   }

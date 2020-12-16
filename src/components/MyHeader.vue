@@ -24,6 +24,7 @@ export default {
   box-sizing: border-box;
   transition:  all ease 0.32s;
   background: #f9f9f9;
+  z-index: 1000;
 }
 .my-header.is-full {
   padding-left: 64px;
