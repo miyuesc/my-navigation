@@ -2,11 +2,16 @@
   <div class="search-box">
     <div class="search-box__input">
       <label>
-        <input v-model="searchInput" @input="changeInput" />
+        <input v-model="searchInput" @input="changeInput" @keyup.enter="searchResult" />
       </label>
-      <div class="search-input__button">
+      <div class="search-input__button" @click.stop="searchResult">
         <i class="iconfont icon-search"></i>
       </div>
+    </div>
+    <div class="search-target-engine">
+      <div class="target-engine__item google" :class="{'is-active': engineType === 'google'}" @click.stop="engineType = 'google'">Google</div>
+      <div class="target-engine__item baidu" :class="{'is-active': engineType === 'baidu'}" @click.stop="engineType = 'baidu'">百度</div>
+      <div class="target-engine__item biying" :class="{'is-active': engineType === 'biying'}" @click.stop="engineType = 'biying'">必应</div>
     </div>
   </div>
 </template>
@@ -16,12 +21,21 @@ export default {
   name: "SearchBox",
   data() {
     return {
-      searchInput: ""
+      searchInput: "",
+      engineType: "google",
+      searchEngine: {
+        google: "https://www.google.com/search?q=",
+        baidu: "https://www.baidu.com/s?wd=",
+        biying: "https://www.bing.com/search?q="
+      }
     }
   },
   methods: {
     changeInput(e) {
       console.log(e);
+    },
+    searchResult() {
+      window.open(`${this.searchEngine[this.engineType]}${this.searchInput}`);
     }
   }
 }
@@ -32,6 +46,36 @@ export default {
   width: 100%;
   height: 400px;
   box-sizing: border-box;
+}
+.search-target-engine {
+  margin: 16px auto;
+  display: inline-flex;
+  justify-content: start;
+  width: 100%;
+  position: relative;
+  box-sizing: border-box;
+  padding: 0 calc(50% - 300px);
+}
+.target-engine__item {
+  display: block;
+  padding: 8px 16px;
+  font-size: 14px;
+  border-radius: 4px;
+  background: #fefefe;
+  cursor: pointer;
+}
+.target-engine__item + .target-engine__item {
+  margin-left: 8px;
+}
+.target-engine__item:hover {
+  color: #f1404b;
+}
+.target-engine__item.is-active {
+  background: #f1404b;
+  color: #f0f0f0;
+}
+.target-engine__item.is-active:hover {
+  color: #f0f0f0;
 }
 .search-box__input {
   margin: 0 auto;
