@@ -1,7 +1,7 @@
 <template>
-  <div class="navigation-box" @click="isEditing = ''" @contextmenu.self.prevent="isEditing = ''">
+  <div class="navigation-box">
     <div class="navigation-add">
-      <div class="navigation-add__button" @click="handleAddNavigation">+</div>
+      <div class="navigation-add__button" @click="openModelOnAdd">+</div>
     </div>
     <div class="navigation-item" v-for="item in bookmarks" :key="item.id">
       <h4 :id="item.id"></h4>
@@ -23,7 +23,7 @@
             <div class="favorite-item__href">{{ fi.href }}</div>
             <transition name="cover">
               <div class="favorite-item__cover" :key="fi.name + '_cover'" v-show="isEditing === fi.name" @click.stop>
-                <div class="favorite-item__button favorite-item__edit" @click.stop="handleEditNavigation(fi, fIndex)">
+                <div class="favorite-item__button favorite-item__edit" @click.stop="openModelOnEdit(item, fi, fIndex)">
                   <i class="iconfont icon-bianji_huaban"></i>
                 </div>
                 <div class="favorite-item__button favorite-item__delete" @click.stop="handleDeleteNavigation(item, fi, fIndex)">
@@ -58,7 +58,7 @@
       <div slot="footer" style="width: max-content;">
         <div v-if="isEditing && isEditing.length" class="model-button submit" @click="saveNavigation">保 存</div>
         <div v-else class="model-button submit" @click="addNavigation">添 加</div>
-        <div class="model-button cancel" @click="modelVisible = false">取 消</div>
+        <div class="model-button cancel" @click="handleCancel">取 消</div>
       </div>
     </navigation-model>
   </div>
@@ -66,6 +66,7 @@
 
 <script>
 import NavigationModel from "@/components/NavigationModel";
+import {getNavigationArray, resetNavigationWithArray} from "@/utils";
 export default {
   name: "NavigationBox",
   components: {NavigationModel},
@@ -74,17 +75,18 @@ export default {
       bookmarks: [],
       modelVisible: false,
       navigationAddForm: {},
-      isEditing: ""
+      isEditing: "",
+      onEditingFavIndex: 0,
+      onEditingFavParent: null
     }
   },
   created() {
-    const bookmarks = localStorage.getItem("bookmarks");
-    if (bookmarks) {
-      this.bookmarks = JSON.parse(bookmarks);
-    }
-    console.log(this);
+    this.initBookmarks();
   },
   methods: {
+    initBookmarks() {
+      this.bookmarks = getNavigationArray();
+    },
     turnToTarget(target) {
       window.open(target.href);
     },
@@ -102,22 +104,27 @@ export default {
       }
       this.modelVisible = false;
       this.navigationAddForm = {};
-      localStorage.setItem("bookmarks", JSON.stringify(this.bookmarks));
+      resetNavigationWithArray(this.bookmarks);
+      this.initBookmarks();
+      this.closeModel();
     },
     saveNavigation() {
-      
+      this.$set(this.onEditingFavParent.children, this.onEditingFavIndex, JSON.parse(JSON.stringify(this.navigationAddForm)));
+      resetNavigationWithArray(this.bookmarks);
+      this.initBookmarks();
+      this.closeModel();
     },
     showCover(fav) {
       this.isEditing = this.isEditing === fav.name ? "" : fav.name;
     },
-    handleAddNavigation() {
+    openModelOnAdd() {
       this.isEditing = "";
-      this.navigationAddForm = {};
       this.modelVisible = true;
     },
-    handleEditNavigation(fav, index) {
+    openModelOnEdit(nav, fav, index) {
       this.navigationAddForm = JSON.parse(JSON.stringify(fav));
-      this.onEditingNavIndex = index;
+      this.onEditingFavIndex = index;
+      this.onEditingFavParent = nav;
       this.modelVisible = true;
     },
     handleDeleteNavigation(nav, fav, index) {
@@ -126,7 +133,17 @@ export default {
           item.children.splice(index, 1);
         }
       })
-      localStorage.setItem("bookmarks", JSON.stringify(this.bookmarks));
+      resetNavigationWithArray(this.bookmarks);
+      this.initBookmarks();
+    },
+    handleCancel() {
+      this.modelVisible = false;
+      this.isEditing = "";
+    },
+    closeModel() {
+      this.navigationAddForm = {};
+      this.modelVisible = false;
+      this.isEditing = "";
     }
   }
 }
@@ -321,7 +338,7 @@ export default {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(0, 0, 0, 0.6);
   display: flex;
   align-items: center;
   justify-content: space-around;
@@ -336,6 +353,7 @@ export default {
   height: 24px;
   border: 4px solid #eeeeee;
   cursor: pointer;
+  transition: all ease 0.1s;
 }
 .favorite-item__button .iconfont {
   font-size: 24px;
