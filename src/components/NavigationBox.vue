@@ -1,37 +1,64 @@
 <template>
-  <div class="navigation-box">
+  <div class="navigation-box" @click="isEditing = ''" @contextmenu.self.prevent="isEditing = ''">
     <div class="navigation-add">
-      <div class="navigation-add__button" @click="modelVisible = true">+</div>
+      <div class="navigation-add__button" @click="handleAddNavigation">+</div>
     </div>
     <div class="navigation-item" v-for="item in bookmarks" :key="item.id">
       <h4 :id="item.id"></h4>
       <div class="navigation-title"><i class="iconfont" :class="item.ico"></i>{{ item.name }}</div>
       <div class="navigation-item__body">
-        <div class="favorite-item" v-for="fi in item.children" :key="fi.name" @click="turnToTarget(fi)">
-          <div class="favorite-item__icon">
-            <div v-if="!fi.type" class="favorite-item__icon-text">{{ fi.name.substring(0, 1) }}</div>
-            <img v-if="fi.type === 'image'" class="favorite-item__icon-img" :src="fi.icon" alt="" />
-            <svg v-if="fi.type === 'icon'" class="iconfont" aria-hidden="true">
-              <use v-bind="{'xlink:href': `#${fi.icon}`}"></use>
-            </svg>
+          <div class="favorite-item"
+               v-for="(fi, fIndex) in item.children"
+               :key="fi.name"
+               @click="turnToTarget(fi)"
+               @contextmenu.prevent="showCover(fi)">
+            <div class="favorite-item__icon">
+              <div v-if="!fi.type" class="favorite-item__icon-text">{{ fi.name.substring(0, 1) }}</div>
+              <img v-if="fi.type === 'image'" class="favorite-item__icon-img" :src="fi.icon" alt="" />
+              <svg v-if="fi.type === 'icon'" class="iconfont" aria-hidden="true">
+                <use v-bind="{'xlink:href': `#${fi.icon}`}"></use>
+              </svg>
+            </div>
+            <div class="favorite-item__title">{{ fi.name }}</div>
+            <div class="favorite-item__href">{{ fi.href }}</div>
+            <transition name="cover">
+              <div class="favorite-item__cover" :key="fi.name + '_cover'" v-show="isEditing === fi.name" @click.stop>
+                <div class="favorite-item__button favorite-item__edit" @click.stop="handleEditNavigation(fi, fIndex)">
+                  <i class="iconfont icon-bianji_huaban"></i>
+                </div>
+                <div class="favorite-item__button favorite-item__delete" @click.stop="handleDeleteNavigation(item, fi, fIndex)">
+                  <i class="iconfont icon-huishouzhan_huaban"></i>
+                </div>
+              </div>
+            </transition>
           </div>
-          <div class="favorite-item__title">{{ fi.name }}</div>
-          <div class="favorite-item__href">{{ fi.href }}</div>
-        </div>
       </div>
     </div>
 
     <navigation-model :visible.sync="modelVisible">
-      <div class="navigation-add__header">添加网址</div>
+      <div class="navigation-add__header">{{ isEditing.length ? "修改网址" : "添加网址" }}</div>
       <div class="navigation-add__form">
-        <input v-model="navigationAddForm.name" placeholder="请输入网站名称">
-        <input v-model="navigationAddForm.href" placeholder="请输入网站地址">
-        <input v-model="navigationAddForm.type" placeholder="请输入图标类型">
-        <input v-model="navigationAddForm.icon" placeholder="请输入图标地址或类名">
+        <label>
+          <span>网站名称：</span>
+          <input v-model="navigationAddForm.name" placeholder="请输入网站名称">
+        </label>
+        <label>
+          <span>网站地址：</span>
+          <input v-model="navigationAddForm.href" placeholder="请输入网站地址">
+        </label>
+        <label>
+          <span>图标类型：</span>
+          <input v-model="navigationAddForm.type" placeholder="请输入图标类型">
+        </label>
+        <label>
+          <span>图标地址：</span>
+          <input v-model="navigationAddForm.icon" placeholder="请输入图标地址或类名">
+        </label>
       </div>
       <div slot="footer" style="width: max-content;">
-        <div class="model-button submit" @click="addNavigation">添加</div>
-        <div class="model-button cancel" @click="modelVisible = false">取消</div>
+        <div v-if="isEditing && isEditing.length" class="model-button submit" @click="saveNavigation">保 存</div>
+        <div v-else class="model-button submit" @click="addNavigation">添 加</div>
+        <div class="model-button cancel" @click="modelVisible = false">取 消</div>
       </div>
     </navigation-model>
   </div>
@@ -46,7 +73,8 @@ export default {
     return {
       bookmarks: [],
       modelVisible: false,
-      navigationAddForm: {}
+      navigationAddForm: {},
+      isEditing: ""
     }
   },
   created() {
@@ -54,6 +82,7 @@ export default {
     if (bookmarks) {
       this.bookmarks = JSON.parse(bookmarks);
     }
+    console.log(this);
   },
   methods: {
     turnToTarget(target) {
@@ -72,6 +101,31 @@ export default {
         this.bookmarks.unshift(mine);
       }
       this.modelVisible = false;
+      this.navigationAddForm = {};
+      localStorage.setItem("bookmarks", JSON.stringify(this.bookmarks));
+    },
+    saveNavigation() {
+      
+    },
+    showCover(fav) {
+      this.isEditing = this.isEditing === fav.name ? "" : fav.name;
+    },
+    handleAddNavigation() {
+      this.isEditing = "";
+      this.navigationAddForm = {};
+      this.modelVisible = true;
+    },
+    handleEditNavigation(fav, index) {
+      this.navigationAddForm = JSON.parse(JSON.stringify(fav));
+      this.onEditingNavIndex = index;
+      this.modelVisible = true;
+    },
+    handleDeleteNavigation(nav, fav, index) {
+      this.bookmarks.forEach(item => {
+        if (item.id === nav.id) {
+          item.children.splice(index, 1);
+        }
+      })
       localStorage.setItem("bookmarks", JSON.stringify(this.bookmarks));
     }
   }
@@ -98,7 +152,18 @@ export default {
   flex-direction: column;
   width: 100%;
 }
+.navigation-add__form label {
+  display: flex;
+  width: 100%;
+}
+.navigation-add__form label span {
+  width: 100px;
+  text-align: right;
+  box-sizing: border-box;
+  padding-right: 8px;
+}
 .navigation-add__form input {
+  flex: 1;
   height: 32px;
   box-sizing: border-box;
   padding: 0 16px;
@@ -106,7 +171,7 @@ export default {
   border: 1px solid #eeeeee;
   background: #eeeeee;
 }
-.navigation-add__form input + input {
+.navigation-add__form label + label {
   margin-top: 16px;
 }
 .navigation-add__form input:hover {
@@ -190,16 +255,19 @@ export default {
   grid-gap: 0 16px;
   height: 80px;
   border: 1px solid #eeeeee;
-  border-radius: 4px;
+  border-radius: 6px;
   padding: 8px;
   box-sizing: border-box;
   background: #ffffff;
   box-shadow: 0 0 20px -5px rgba(158,158,158,.2);
   transition: all ease 0.2s;
+  position: relative;
+  overflow: hidden;
 }
 .favorite-item:hover {
   cursor: pointer;
-  transform: translateY(-10px);
+  transition: all ease 0.2s;
+  box-shadow: 0 0 20px 2px #fefefe;
 }
 .favorite-item__icon {
   grid-row-start: 1;
@@ -247,5 +315,49 @@ export default {
   font-size: 12px;
   color: #cccccc;
   line-height: 32px;
+}
+.favorite-item__cover {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  cursor: default;
+}
+.favorite-item__button {
+  color: #eeeeee;
+  font-weight: bold;
+  padding: 6px;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  border: 4px solid #eeeeee;
+  cursor: pointer;
+}
+.favorite-item__button .iconfont {
+  font-size: 24px;
+}
+.favorite-item__edit:hover {
+  color: #f48a40;
+  border-color: #f48a40;
+}
+.favorite-item__delete:hover {
+  color: #f1404b;
+  border-color: #f1404b;
+}
+.cover-enter,
+.cover-leave-to {
+  height: 0;
+}
+.cover-enter-to,
+.cover-leave {
+  height: 100%;
+}
+.cover-enter-active,
+.cover-leave-active {
+  transition: all ease 0.2s;
 }
 </style>

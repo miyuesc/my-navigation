@@ -77,7 +77,7 @@ export default {
 .search-target-engine {
   margin: 16px auto;
   display: inline-flex;
-  justify-content: start;
+  justify-content: flex-start;
   position: relative;
   box-sizing: border-box;
   padding: 0 calc(50% - 300px);
