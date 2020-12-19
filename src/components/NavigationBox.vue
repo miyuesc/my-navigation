@@ -35,7 +35,7 @@
       </div>
     </div>
 
-    <navigation-model :visible.sync="modelVisible">
+    <navigation-model :visible.sync="modelVisible" @close="closeModel">
       <div class="navigation-add__header">{{ isEditing.length ? "修改网址" : "添加网址" }}</div>
       <div class="navigation-add__form">
         <label>

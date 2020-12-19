@@ -1,6 +1,6 @@
 <template>
   <transition name="opacity">
-    <div class="navigation-model" v-show="visible" @click.self="$emit('update:visible', false)">
+    <div class="navigation-model" v-show="visible" @click.self="closeModel">
       <transition name="trans">
         <div class="navigation-model__content" :style="{ width: `${width}px` }">
           <div class="navigation-model__body">
@@ -26,6 +26,12 @@ export default {
     width: {
       type: Number,
       default: 600
+    }
+  },
+  methods: {
+    closeModel() {
+      this.$emit('update:visible', false);
+      this.$emit("close");
     }
   }
 }
