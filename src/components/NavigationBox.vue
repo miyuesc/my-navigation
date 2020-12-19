@@ -172,6 +172,7 @@ export default {
 .navigation-add__form label {
   display: flex;
   width: 100%;
+  align-items: center;
 }
 .navigation-add__form label span {
   width: 100px;
