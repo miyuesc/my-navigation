@@ -1,5 +1,5 @@
 <template>
-  <div class="navigation-box">
+  <div class="navigation-box" @click="isEditing = false">
     <div class="navigation-add">
       <div class="navigation-add__button" @click="openModelOnAdd">+</div>
     </div>
@@ -339,11 +339,12 @@ export default {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.4);
   display: flex;
   align-items: center;
   justify-content: space-around;
   cursor: default;
+  backdrop-filter: blur(2px);
 }
 .favorite-item__button {
   color: #eeeeee;
