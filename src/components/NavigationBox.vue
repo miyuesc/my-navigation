@@ -105,7 +105,7 @@ export default {
       localStorage.setItem("bookmarks", JSON.stringify(this.bookmarks));
     },
     saveNavigation() {
-      
+
     },
     showCover(fav) {
       this.isEditing = this.isEditing === fav.name ? "" : fav.name;
