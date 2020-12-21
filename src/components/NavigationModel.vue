@@ -26,12 +26,40 @@ export default {
     width: {
       type: Number,
       default: 600
+    },
+    appendToBody: {
+      type: Boolean,
+      default: true
+    }
+  },
+  watch: {
+    visible(val) {
+      if (val) {
+        this.closed = false;
+        this.$emit('open');
+        if (this.appendToBody) {
+          document.body.appendChild(this.$el);
+        }
+      } else {
+        if (!this.closed) this.$emit('close');
+      }
     }
   },
   methods: {
     closeModel() {
       this.$emit('update:visible', false);
       this.$emit("close");
+    }
+  },
+  mounted() {
+    if (this.appendToBody) {
+      document.body.appendChild(this.$el);
+    }
+  },
+  destroyed() {
+    // if appendToBody is true, remove DOM node after destroy
+    if (this.appendToBody && this.$el && this.$el.parentNode) {
+      this.$el.parentNode.removeChild(this.$el);
     }
   }
 }
