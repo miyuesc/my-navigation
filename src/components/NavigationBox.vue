@@ -110,7 +110,7 @@
 
 <script>
 import NavigationModel from "@/components/NavigationModel";
-import { getNavigationArray, resetNavigationWithArray } from "@/utils";
+import { getNavigationArray, resetNavigationWithArray } from "@/utils/bookmarks";
 export default {
   name: "NavigationBox",
   components: { NavigationModel },
