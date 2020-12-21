@@ -33,7 +33,7 @@ export default {
   },
   data() {
     return {
-      isMiniSlider: false
+      isMiniSlider: true
     };
   },
   mounted() {

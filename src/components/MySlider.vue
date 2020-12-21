@@ -119,11 +119,16 @@ export default {
   white-space: nowrap;
   color: #333333;
   text-decoration: none;
+  font-size: 16px;
 }
 .nav-classification-item__ico {
   width: 40px;
   display: block;
   text-align: center;
+  font-size: 18px;
+}
+.nav-classification-item__ico .iconfont {
+  font-size: 18px;
 }
 .nav-classification-item__tooltip {
   position: absolute;
@@ -147,6 +152,7 @@ export default {
   width: max-content;
   padding: 8px 16px;
   border-radius: 4px;
+  font-size: 16px;
 }
 .fade-left-leave,
 .fade-left-enter-to {
