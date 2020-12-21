@@ -2,11 +2,24 @@
   <div class="my-slider" :class="{'is-open': !mini}">
     <div class="logo"></div>
     <div class="nav-classification">
-      <a class="nav-classification-item" :class="{'is-active': selected === i.id}" v-for="i in nav" :key="i.name" @click.stop="scrollToTarget(i)">
+      <a class="nav-classification-item"
+         :class="{'is-active': selected === i.id}"
+         v-for="i in nav"
+         :key="i.name"
+         @click.stop="scrollToTarget(i)"
+         @mouseenter="onHover = i.id"
+         @mouseleave="onHover = ''">
         <div class="nav-classification-item__ico">
           <i class="iconfont" :class="i.ico"></i>
         </div>
         <div class="nav-classification-item__name">{{ i.name }}</div>
+        <transition name="fade-left">
+          <div class="nav-classification-item__tooltip" v-if="mini && onHover === i.id">
+            <!--        <div class="nav-classification-item__tooltip" v-if="mini">-->
+            <div class="nav-classification-item__tooltip-ico"></div>
+            <div class="nav-classification-item__tooltip-body">{{ i.name }}</div>
+          </div>
+        </transition>
       </a>
     </div>
   </div>
@@ -21,7 +34,8 @@ export default {
   data() {
     return {
       nav: [],
-      selected: ""
+      selected: "",
+      onHover: ""
     }
   },
   created() {
@@ -50,6 +64,9 @@ export default {
   box-shadow: 6px 0 10px #f0f0f0;
   transition:  all ease 0.32s;
   background: #f9f9f9;
+  z-index: 10;
+  box-sizing: border-box;
+  padding: 16px 0;
 }
 .my-slider.is-open {
   width: 240px;
@@ -74,6 +91,8 @@ export default {
   padding: 0 16px;
   text-decoration: none;
   transition:  all ease 0.12s;
+  position: relative;
+  align-items: center;
 }
 .nav-classification-item:hover {
   cursor: pointer;
@@ -98,5 +117,45 @@ export default {
   width: 40px;
   display: block;
   text-align: center;
+}
+.nav-classification-item__tooltip {
+  position: absolute;
+  right: 6px;
+  top: 0;
+  bottom: 0;
+  box-sizing: border-box;
+  z-index: 9999;
+  transform: translateX(100%);
+  display: inline-flex;
+  align-items: center;
+}
+.nav-classification-item__tooltip-ico {
+  width: 0;
+  height: 0;
+  border: 6px solid transparent;
+  border-right: 6px solid #ffffff;
+}
+.nav-classification-item__tooltip-body {
+  background: #ffffff;
+  width: max-content;
+  padding: 8px 16px;
+  border-radius: 4px;
+}
+.fade-left-leave,
+.fade-left-enter-to {
+  transform: translateX(100%);
+  opacity: 1;
+}
+.fade-left-enter {
+  transform: translateX(50%);
+  opacity: 0;
+}
+.fade-left-leave-to {
+  transform: translateX(150%);
+  opacity: 0;
+}
+.fade-left-leave-active,
+.fade-left-enter-active {
+  transition: all ease 0.32s;
 }
 </style>
