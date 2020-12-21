@@ -5,59 +5,103 @@
     </div>
     <div class="navigation-item" v-for="item in bookmarks" :key="item.id">
       <h4 :id="item.id"></h4>
-      <div class="navigation-title"><i class="iconfont" :class="item.ico"></i>{{ item.name }}</div>
+      <div class="navigation-title">
+        <i class="iconfont" :class="item.ico"></i>{{ item.name }}
+      </div>
       <div class="navigation-item__body">
-          <div class="favorite-item"
-               v-for="(fi, fIndex) in item.children"
-               :key="fi.name"
-               @click="turnToTarget(fi)"
-               @contextmenu.prevent="showCover(fi)">
-            <div class="favorite-item__icon">
-              <div v-if="!fi.type" class="favorite-item__icon-text">{{ fi.name.substring(0, 1) }}</div>
-              <img v-if="fi.type === 'image'" class="favorite-item__icon-img" :src="fi.icon" alt="" />
-              <svg v-if="fi.type === 'icon'" class="iconfont" aria-hidden="true">
-                <use v-bind="{'xlink:href': `#${fi.icon}`}"></use>
-              </svg>
+        <div
+          class="favorite-item"
+          v-for="(fi, fIndex) in item.children"
+          :key="fi.name"
+          @click="turnToTarget(fi)"
+          @contextmenu.prevent="showCover(fi)"
+        >
+          <div class="favorite-item__icon">
+            <div v-if="!fi.type" class="favorite-item__icon-text">
+              {{ fi.name.substring(0, 1) }}
             </div>
-            <div class="favorite-item__title">{{ fi.name }}</div>
-            <div class="favorite-item__href">{{ fi.href }}</div>
-            <transition name="cover">
-              <div class="favorite-item__cover" :key="fi.name + '_cover'" v-show="isEditing === fi.name" @click.stop>
-                <div class="favorite-item__button favorite-item__edit" @click.stop="openModelOnEdit(item, fi, fIndex)">
-                  <i class="iconfont icon-bianji_huaban"></i>
-                </div>
-                <div class="favorite-item__button favorite-item__delete" @click.stop="handleDeleteNavigation(item, fi, fIndex)">
-                  <i class="iconfont icon-huishouzhan_huaban"></i>
-                </div>
-              </div>
-            </transition>
+            <img
+              v-if="fi.type === 'image'"
+              class="favorite-item__icon-img"
+              :src="fi.icon"
+              alt=""
+            />
+            <svg v-if="fi.type === 'icon'" class="iconfont" aria-hidden="true">
+              <use v-bind="{ 'xlink:href': `#${fi.icon}` }"></use>
+            </svg>
           </div>
+          <div class="favorite-item__title">{{ fi.name }}</div>
+          <div class="favorite-item__href">{{ fi.href }}</div>
+          <transition name="cover">
+            <div
+              class="favorite-item__cover"
+              :key="fi.name + '_cover'"
+              v-show="isEditing === fi.name"
+              @click.stop
+            >
+              <div
+                class="favorite-item__button favorite-item__edit"
+                @click.stop="openModelOnEdit(item, fi, fIndex)"
+              >
+                <i class="iconfont icon-bianji_huaban"></i>
+              </div>
+              <div
+                class="favorite-item__button favorite-item__delete"
+                @click.stop="handleDeleteNavigation(item, fi, fIndex)"
+              >
+                <i class="iconfont icon-huishouzhan_huaban"></i>
+              </div>
+            </div>
+          </transition>
+        </div>
       </div>
     </div>
 
     <navigation-model :visible.sync="modelVisible" @close="closeModel">
-      <div class="navigation-add__header">{{ isEditing.length ? "修改网址" : "添加网址" }}</div>
+      <div class="navigation-add__header">
+        {{ isEditing.length ? "修改网址" : "添加网址" }}
+      </div>
       <div class="navigation-add__form">
         <label>
           <span>网站名称：</span>
-          <input v-model="navigationAddForm.name" placeholder="请输入网站名称">
+          <input
+            v-model="navigationAddForm.name"
+            placeholder="请输入网站名称"
+          />
         </label>
         <label>
           <span>网站地址：</span>
-          <input v-model="navigationAddForm.href" placeholder="请输入网站地址">
+          <input
+            v-model="navigationAddForm.href"
+            placeholder="请输入网站地址"
+          />
         </label>
         <label>
           <span>图标类型：</span>
-          <input v-model="navigationAddForm.type" placeholder="请输入图标类型">
+          <input
+            v-model="navigationAddForm.type"
+            placeholder="请输入图标类型"
+          />
         </label>
         <label>
           <span>图标地址：</span>
-          <input v-model="navigationAddForm.icon" placeholder="请输入图标地址或类名">
+          <input
+            v-model="navigationAddForm.icon"
+            placeholder="请输入图标地址或类名"
+          />
         </label>
       </div>
       <div slot="footer" style="width: max-content;">
-        <div v-if="isEditing && isEditing.length" class="model-button submit" @click="saveNavigation">保 存</div>
-        <div v-else class="model-button submit" @click="addNavigation">添 加</div>
+        <div
+          v-if="isEditing && isEditing.length"
+          class="model-button submit"
+          @click="saveNavigation"
+        >
+          保 存
+        </div>
+        <div v-else class="model-button submit" @click="addNavigation">
+          添 加
+        </div>
         <div class="model-button cancel" @click="handleCancel">取 消</div>
       </div>
     </navigation-model>
@@ -66,10 +110,10 @@
 
 <script>
 import NavigationModel from "@/components/NavigationModel";
-import {getNavigationArray, resetNavigationWithArray} from "@/utils";
+import { getNavigationArray, resetNavigationWithArray } from "@/utils";
 export default {
   name: "NavigationBox",
-  components: {NavigationModel},
+  components: { NavigationModel },
   data() {
     return {
       bookmarks: [],
@@ -78,7 +122,7 @@ export default {
       isEditing: "",
       onEditingFavIndex: 0,
       onEditingFavParent: null
-    }
+    };
   },
   created() {
     this.initBookmarks();
@@ -91,15 +135,19 @@ export default {
       window.open(target.href);
     },
     addNavigation() {
-      if (this.bookmarks && this.bookmarks[0] && this.bookmarks[0].id === "mine") {
-          this.bookmarks[0].children.push(this.navigationAddForm);
+      if (
+        this.bookmarks &&
+        this.bookmarks[0] &&
+        this.bookmarks[0].id === "mine"
+      ) {
+        this.bookmarks[0].children.push(this.navigationAddForm);
       } else {
         const mine = {
           id: "mine",
           name: "我的收藏",
           ico: "icon-shoucang_huaban",
           children: [this.navigationAddForm]
-        }
+        };
         this.bookmarks.unshift(mine);
       }
       this.modelVisible = false;
@@ -109,7 +157,11 @@ export default {
       this.closeModel();
     },
     saveNavigation() {
-      this.$set(this.onEditingFavParent.children, this.onEditingFavIndex, JSON.parse(JSON.stringify(this.navigationAddForm)));
+      this.$set(
+        this.onEditingFavParent.children,
+        this.onEditingFavIndex,
+        JSON.parse(JSON.stringify(this.navigationAddForm))
+      );
       resetNavigationWithArray(this.bookmarks);
       this.initBookmarks();
       this.closeModel();
@@ -132,7 +184,7 @@ export default {
         if (item.id === nav.id) {
           item.children.splice(index, 1);
         }
-      })
+      });
       resetNavigationWithArray(this.bookmarks);
       this.initBookmarks();
     },
@@ -146,7 +198,7 @@ export default {
       this.isEditing = "";
     }
   }
-}
+};
 </script>
 
 <style scoped>
@@ -277,7 +329,7 @@ export default {
   padding: 8px;
   box-sizing: border-box;
   background: #ffffff;
-  box-shadow: 0 0 20px -5px rgba(158,158,158,.2);
+  box-shadow: 0 0 20px -5px rgba(158, 158, 158, 0.2);
   transition: all ease 0.2s;
   position: relative;
   overflow: hidden;

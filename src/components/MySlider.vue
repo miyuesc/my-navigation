@@ -1,23 +1,30 @@
 <template>
-  <div class="my-slider" :class="{'is-open': !mini}">
+  <div class="my-slider" :class="{ 'is-open': !mini }">
     <div class="logo"></div>
     <div class="nav-classification">
-      <a class="nav-classification-item"
-         :class="{'is-active': selected === i.id}"
-         v-for="i in nav"
-         :key="i.name"
-         @click.stop="scrollToTarget(i)"
-         @mouseenter="onHover = i.id"
-         @mouseleave="onHover = ''">
+      <a
+        class="nav-classification-item"
+        :class="{ 'is-active': selected === i.id }"
+        v-for="i in nav"
+        :key="i.name"
+        @click.stop="scrollToTarget(i)"
+        @mouseenter="onHover = i.id"
+        @mouseleave="onHover = ''"
+      >
         <div class="nav-classification-item__ico">
           <i class="iconfont" :class="i.ico"></i>
         </div>
         <div class="nav-classification-item__name">{{ i.name }}</div>
         <transition name="fade-left">
-          <div class="nav-classification-item__tooltip" v-if="mini && onHover === i.id">
+          <div
+            class="nav-classification-item__tooltip"
+            v-if="mini && onHover === i.id"
+          >
             <!--        <div class="nav-classification-item__tooltip" v-if="mini">-->
             <div class="nav-classification-item__tooltip-ico"></div>
-            <div class="nav-classification-item__tooltip-body">{{ i.name }}</div>
+            <div class="nav-classification-item__tooltip-body">
+              {{ i.name }}
+            </div>
           </div>
         </transition>
       </a>
@@ -36,7 +43,7 @@ export default {
       nav: [],
       selected: "",
       onHover: ""
-    }
+    };
   },
   created() {
     const bookmarks = localStorage.getItem("bookmarks");
@@ -51,7 +58,7 @@ export default {
       this.$emit("scroll-top", targetEl.offsetTop);
     }
   }
-}
+};
 </script>
 
 <style scoped>
@@ -62,7 +69,7 @@ export default {
   bottom: 0;
   width: 64px;
   box-shadow: 6px 0 10px #f0f0f0;
-  transition:  all ease 0.32s;
+  transition: all ease 0.32s;
   background: #f9f9f9;
   z-index: 10;
   box-sizing: border-box;
@@ -90,7 +97,7 @@ export default {
   box-sizing: border-box;
   padding: 0 16px;
   text-decoration: none;
-  transition:  all ease 0.12s;
+  transition: all ease 0.12s;
   position: relative;
   align-items: center;
 }
@@ -99,7 +106,7 @@ export default {
 }
 .nav-classification-item:hover > * {
   color: coral;
-  transition:  all ease 0.12s;
+  transition: all ease 0.12s;
 }
 .nav-classification-item.is-active > * {
   color: coral;

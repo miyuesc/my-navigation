@@ -2,21 +2,49 @@
   <div class="search-box">
     <div class="search-box__input">
       <label>
-        <input v-model="searchInput" placeholder="搜点儿什么吧！" @input="changeInput" @keyup.enter="searchResult" />
+        <input
+          v-model="searchInput"
+          placeholder="搜点儿什么吧！"
+          @input="changeInput"
+          @keyup.enter="searchResult"
+        />
       </label>
       <div class="search-input__button" @click.stop="searchResult">
         <i class="iconfont icon-search"></i>
       </div>
     </div>
     <div class="search-target-engine">
-      <div class="target-engine__item google" :class="{'is-active': engineType === 'google'}" @click.stop="engineType = 'google'">Google</div>
-      <div class="target-engine__item baidu" :class="{'is-active': engineType === 'baidu'}" @click.stop="engineType = 'baidu'">百度</div>
-      <div class="target-engine__item biying" :class="{'is-active': engineType === 'biying'}" @click.stop="engineType = 'biying'">必应</div>
+      <div
+        class="target-engine__item google"
+        :class="{ 'is-active': engineType === 'google' }"
+        @click.stop="engineType = 'google'"
+      >
+        Google
+      </div>
+      <div
+        class="target-engine__item baidu"
+        :class="{ 'is-active': engineType === 'baidu' }"
+        @click.stop="engineType = 'baidu'"
+      >
+        百度
+      </div>
+      <div
+        class="target-engine__item biying"
+        :class="{ 'is-active': engineType === 'biying' }"
+        @click.stop="engineType = 'biying'"
+      >
+        必应
+      </div>
     </div>
     <div class="external-open__button" @click="openExternal = !openExternal">
-      <i class="iconfont external-open__button-icon" :class="openExternal ? 'icon-quxiaoquanping_huaban' : 'icon-quanping_huaban'"></i>
+      <i
+        class="iconfont external-open__button-icon"
+        :class="
+          openExternal ? 'icon-quxiaoquanping_huaban' : 'icon-quanping_huaban'
+        "
+      ></i>
     </div>
-    <div class="external-box" :class="{'is-opened': openExternal}"></div>
+    <div class="external-box" :class="{ 'is-opened': openExternal }"></div>
   </div>
 </template>
 
@@ -33,7 +61,7 @@ export default {
         biying: "https://www.bing.com/search?q="
       },
       openExternal: false
-    }
+    };
   },
   methods: {
     changeInput(e) {
@@ -43,7 +71,7 @@ export default {
       window.open(`${this.searchEngine[this.engineType]}${this.searchInput}`);
     }
   }
-}
+};
 </script>
 
 <style scoped>

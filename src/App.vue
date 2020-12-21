@@ -1,8 +1,15 @@
 <template>
   <div id="app">
     <my-slider :mini="isMiniSlider" @scroll-top="scrollToTargetType" />
-    <my-header :mini="isMiniSlider" @change-slider="isMiniSlider = !isMiniSlider" />
-    <div ref="mainContainer" class="main-container" :class="{'full-container': isMiniSlider}">
+    <my-header
+      :mini="isMiniSlider"
+      @change-slider="isMiniSlider = !isMiniSlider"
+    />
+    <div
+      ref="mainContainer"
+      class="main-container"
+      :class="{ 'full-container': isMiniSlider }"
+    >
       <search-box />
       <navigation-box />
     </div>
@@ -17,7 +24,7 @@ import NavigationBox from "@/components/NavigationBox";
 import bookmarks from "../public/mine";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
     NavigationBox,
     SearchBox,
@@ -27,19 +34,19 @@ export default {
   data() {
     return {
       isMiniSlider: false
-    }
+    };
   },
   mounted() {
-    if (!localStorage.getItem("bookmarks")){
+    if (!localStorage.getItem("bookmarks")) {
       localStorage.setItem("bookmarks", JSON.stringify(bookmarks.bookmarks));
     }
   },
   methods: {
     scrollToTargetType(top) {
-      this.$refs.mainContainer.scrollTo({top: top - 64, behavior: "smooth"});
+      this.$refs.mainContainer.scrollTo({ top: top - 64, behavior: "smooth" });
     }
   }
-}
+};
 </script>
 
 <style>

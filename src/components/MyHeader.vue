@@ -1,6 +1,10 @@
 <template>
-  <header class="my-header" :class="{'is-full': mini}">
-    <div class="slider-control iconfont" :class="mini ? 'icon-indent' : 'icon-outdent'" @click="$emit('change-slider')"></div>
+  <header class="my-header" :class="{ 'is-full': mini }">
+    <div
+      class="slider-control iconfont"
+      :class="mini ? 'icon-indent' : 'icon-outdent'"
+      @click="$emit('change-slider')"
+    ></div>
   </header>
 </template>
 
@@ -10,7 +14,7 @@ export default {
   props: {
     mini: Boolean
   }
-}
+};
 </script>
 
 <style scoped>
@@ -22,7 +26,7 @@ export default {
   height: 64px;
   padding-left: 240px;
   box-sizing: border-box;
-  transition:  all ease 0.32s;
+  transition: all ease 0.32s;
   background: #f9f9f9;
   z-index: 1000;
 }

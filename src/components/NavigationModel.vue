@@ -36,18 +36,18 @@ export default {
     visible(val) {
       if (val) {
         this.closed = false;
-        this.$emit('open');
+        this.$emit("open");
         if (this.appendToBody) {
           document.body.appendChild(this.$el);
         }
       } else {
-        if (!this.closed) this.$emit('close');
+        if (!this.closed) this.$emit("close");
       }
     }
   },
   methods: {
     closeModel() {
-      this.$emit('update:visible', false);
+      this.$emit("update:visible", false);
       this.$emit("close");
     }
   },
@@ -62,7 +62,7 @@ export default {
       this.$el.parentNode.removeChild(this.$el);
     }
   }
-}
+};
 </script>
 
 <style scoped>
@@ -72,7 +72,7 @@ export default {
   right: 0;
   bottom: 0;
   left: 0;
-  background: rgba(130,130,130,.5);
+  background: rgba(130, 130, 130, 0.5);
   z-index: 2000;
 }
 .navigation-model__content {
