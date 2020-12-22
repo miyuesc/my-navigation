@@ -8,7 +8,7 @@
       <div class="navigation-title">
         <i class="iconfont" :class="item.ico"></i>{{ item.name }}
       </div>
-      <div class="navigation-item__body">
+      <div class="navigation-item__body" :style="lineStyle">
         <div
           class="favorite-item"
           v-for="(fi, fIndex) in item.children"
@@ -121,8 +121,14 @@ export default {
       navigationAddForm: {},
       isEditing: "",
       onEditingFavIndex: 0,
-      onEditingFavParent: null
+      onEditingFavParent: null,
+      limitNum: 6
     };
+  },
+  computed: {
+    lineStyle() {
+      return { "grid-template-columns": `repeat(${this.limitNum}, 1fr)` }
+    }
   },
   created() {
     this.initBookmarks();
@@ -314,7 +320,6 @@ export default {
 }
 .navigation-item__body {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
   grid-gap: 32px;
 }
 .favorite-item {
