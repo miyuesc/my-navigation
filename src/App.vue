@@ -21,7 +21,6 @@ import MySlider from "@/components/MySlider";
 import MyHeader from "@/components/MyHeader";
 import SearchBox from "@/components/SearchBox";
 import NavigationBox from "@/components/NavigationBox";
-import bookmarks from "../public/mine";
 
 export default {
   name: "App",
@@ -35,11 +34,6 @@ export default {
     return {
       isMiniSlider: true
     };
-  },
-  mounted() {
-    if (!localStorage.getItem("bookmarks")) {
-      localStorage.setItem("bookmarks", JSON.stringify(bookmarks.bookmarks));
-    }
   },
   methods: {
     scrollToTargetType(top) {
