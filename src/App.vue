@@ -50,15 +50,8 @@
           </label>
         </div>
         <div slot="footer" style="width: max-content;">
-          <div
-            v-if="isEditing && isEditing.length"
-            class="model-button submit"
-            @click="saveNavigation"
-          >
+          <div class="model-button submit" @click="saveNavigation">
             保 存
-          </div>
-          <div v-else class="model-button submit" @click="addNavigation">
-            添 加
           </div>
           <div class="model-button cancel" @click="handleCancel">取 消</div>
         </div>
@@ -140,14 +133,9 @@ export default {
     },
     handleCancel() {
       this.modelVisible = false;
-      this.isEditing = "";
     },
     closeModel() {
       this.modelVisible = false;
-      this.$nextTick(() => {
-        this.navigationAddForm = {};
-        this.isEditing = "";
-      });
     }
   }
 };
