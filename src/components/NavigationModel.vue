@@ -35,7 +35,7 @@ export default {
   computed: {
     bodyStyle() {
       let left = this.width / 2;
-      return { width: `${this.width}px`, left: `calc(50% - ${left}px)` }
+      return { width: `${this.width}px`, left: `calc(50% - ${left}px)` };
     }
   },
   watch: {

@@ -20,8 +20,8 @@ export function resetNavigation(bookmarks) {
 
 export function resetNavigationWithArray(bookmarks) {
   let bookmarksObject = {};
-  bookmarks.forEach(b => {
-    bookmarksObject[b.id] = { ...b };
+  bookmarks.forEach((b, newIndex) => {
+    bookmarksObject[b.id] = { ...b, index: newIndex };
   });
   resetNavigation(bookmarksObject);
 }
