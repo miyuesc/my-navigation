@@ -1,129 +1,112 @@
 <template>
-  <transition name="opacity">
-    <div
-      class="my-setting-drawer__cover"
-      v-show="visible"
-      @click.self="closeModel"
-    >
-      <transition name="fade-right">
-        <div class="my-setting-drawer" v-show="visible" :style="{ width: `${width}px` }">
-          <div class="my-setting-item">
-            <div class="my-setting-item__label">单行地址条数：</div>
-            <div class="my-setting-item__content">
-              <label for="radio-4" class="my-radio" :aria-checked="setting.lineLimit === '4'">
-                <input class="radio-input" name="line-limit" type="radio" value="4" id="radio-4" @change="handleChange">
-                <span>4</span>
-              </label>
-              <label for="radio-5" class="my-radio" :aria-checked="setting.lineLimit === '5'">
-                <input class="radio-input" name="line-limit" type="radio" value="5" id="radio-5" @change="handleChange">
-                <span>5</span>
-              </label>
-              <label for="radio-6" class="my-radio" :aria-checked="setting.lineLimit === '6'">
-                <input class="radio-input" name="line-limit" type="radio" value="6" id="radio-6" @change="handleChange">
-                <span>6</span>
-              </label>
-              <label for="radio-7" class="my-radio" :aria-checked="setting.lineLimit === '7'">
-                <input class="radio-input" name="line-limit" type="radio" value="6" id="radio-7" @change="handleChange">
-                <span>7</span>
-              </label>
-              <label for="radio-8" class="my-radio" :aria-checked="setting.lineLimit === '8'">
-                <input class="radio-input" name="line-limit" type="radio" value="6" id="radio-8" @change="handleChange">
-                <span>8</span>
-              </label>
-            </div>
-          </div>
-        </div>
-      </transition>
-    </div>
-  </transition>
+  <el-drawer
+    :visible.sync="settingVisible"
+    title="设置"
+    append-to-body
+    destroy-on-close
+    @close="closeModel"
+  >
+    <el-form :model="settingForm" label-width="100px">
+      <el-form-item label="每行地址数：">
+        <el-radio-group v-model="settingForm.lineLimit">
+          <el-radio label="4">4</el-radio>
+          <el-radio label="5">5</el-radio>
+          <el-radio label="6">6</el-radio>
+          <el-radio label="7">7</el-radio>
+          <el-radio label="8">8</el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item label="打开方式：">
+        <el-radio-group v-model="settingForm.openMethod">
+          <el-radio label="_self">当前标签页</el-radio>
+          <el-radio label="_blank">新标签页</el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item label="分类管理：">
+        <el-tree
+          :data="navigations"
+          :props="{ label: 'name' }"
+          :allow-drop="allowDropValidator"
+          draggable
+          @node-drop="updateNavigation"
+        />
+      </el-form-item>
+    </el-form>
+  </el-drawer>
 </template>
 
 <script>
+import { getSetting, setSetting } from "@/utils/setting";
+import {
+  getNavigationArray,
+  resetNavigationWithArray
+} from "@/utils/bookmarks";
+
 export default {
   name: "SettingDrawer",
   props: {
     visible: {
       type: Boolean,
       default: false
-    },
-    width: {
-      type: Number,
-      default: 480
-    },
-    appendToBody: {
-      type: Boolean,
-      default: true
     }
   },
   data() {
-    return  {
-      visibleS: false,
-      setting: {
-        lineLimit: "4"
+    return {
+      settingForm: {
+        lineLimit: "4",
+        openMethod: "_self"
+      },
+      settingVisible: false,
+      navigations: []
+    };
+  },
+  watch: {
+    settingForm: {
+      deep: true,
+      handler: function(newVal) {
+        setSetting(newVal);
+        window.dispatchEvent(this.$myEvent);
+      }
+    },
+    visible: {
+      immediate: true,
+      handler: function(newVal) {
+        if (newVal) {
+          this.settingVisible = newVal;
+          this.settingForm = getSetting() || {};
+          this.navigations = getNavigationArray();
+        }
       }
     }
   },
-  watch: {
-    visible(val) {
-      if (val) {
-        this.closed = false;
-        this.$emit("open");
-        if (this.appendToBody) {
-          document.body.appendChild(this.$el);
-        }
-      } else {
-        if (!this.closed) this.$emit("close");
-      }
-    }
+  created() {
+    this.settingForm = getSetting() || {};
+    this.navigations = getNavigationArray();
   },
   methods: {
     closeModel() {
       this.$emit("update:visible", false);
       this.$emit("close");
     },
-    handleChange(e) {
-      console.log(e.target.value);
-      this.setting.lineLimit = e.target.value;
-    }
-  },
-  mounted() {
-    if (this.appendToBody) {
-      document.body.appendChild(this.$el);
+    allowDropValidator(draggingNode, dropNode, type) {
+      // 拖拽节点是 子节点
+      let draggingIsChild = !draggingNode.data.id;
+      // 目标节点是 子节点
+      let dropIsChild = !dropNode.data.id;
+      if (type === "inner") {
+        return draggingIsChild && !dropIsChild;
+      } else {
+        return (
+          (draggingIsChild && dropIsChild) || (!draggingIsChild && !dropIsChild)
+        );
+      }
+    },
+    updateNavigation() {
+      resetNavigationWithArray(this.navigations);
+      window.dispatchEvent(this.$myEvent);
     }
   }
 };
 </script>
 
-<style scoped>
-.my-setting-drawer__cover {
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  background: rgba(130, 130, 130, 0.4);
-  backdrop-filter: blur(2px);
-  z-index: 2001;
-}
-.my-setting-drawer {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  background: #ffffff;
-  box-sizing: border-box;
-  padding: 16px;
-}
-.my-setting-item {
-  display: inline-flex;
-  width: 100%;
-}
-.my-setting-item__content {
-  flex: 1;
-  display: inline-flex;
-  justify-content: space-between;
-}
-.my-radio {
-  width: 60px;
-}
-</style>
+<style scoped></style>

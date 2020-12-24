@@ -1,7 +1,7 @@
 <template>
   <div class="navigation-box" @click="isEditing = false">
     <div class="navigation-add">
-      <div class="navigation-add__button" @click="openModelOnAdd">+</div>
+      <div class="navigation-add__button" @click="$emit('handle-add')">+</div>
     </div>
     <div class="navigation-item" v-for="item in bookmarks" :key="item.id">
       <h4 :id="item.id"></h4>
@@ -56,134 +56,52 @@
         </div>
       </div>
     </div>
-
-    <navigation-model :visible.sync="modelVisible" @close="closeModel">
-      <div class="navigation-add__header">
-        {{ isEditing.length ? "修改网址" : "添加网址" }}
-      </div>
-      <div class="navigation-add__form">
-        <label>
-          <span>网站名称：</span>
-          <input
-            v-model="navigationAddForm.name"
-            placeholder="请输入网站名称"
-          />
-        </label>
-        <label>
-          <span>网站地址：</span>
-          <input
-            v-model="navigationAddForm.href"
-            placeholder="请输入网站地址"
-          />
-        </label>
-        <label>
-          <span>图标类型：</span>
-          <input
-            v-model="navigationAddForm.type"
-            placeholder="请输入图标类型"
-          />
-        </label>
-        <label>
-          <span>图标地址：</span>
-          <input
-            v-model="navigationAddForm.icon"
-            placeholder="请输入图标地址或类名"
-          />
-        </label>
-      </div>
-      <div slot="footer" style="width: max-content;">
-        <div
-          v-if="isEditing && isEditing.length"
-          class="model-button submit"
-          @click="saveNavigation"
-        >
-          保 存
-        </div>
-        <div v-else class="model-button submit" @click="addNavigation">
-          添 加
-        </div>
-        <div class="model-button cancel" @click="handleCancel">取 消</div>
-      </div>
-    </navigation-model>
   </div>
 </template>
 
 <script>
-import NavigationModel from "@/components/NavigationModel";
-import { getNavigationArray, resetNavigationWithArray } from "@/utils/bookmarks";
+import {
+  getNavigationArray,
+  resetNavigationWithArray
+} from "@/utils/bookmarks";
+import { getSetting } from "@/utils/setting";
 export default {
   name: "NavigationBox",
-  components: { NavigationModel },
   data() {
     return {
       bookmarks: [],
-      modelVisible: false,
-      navigationAddForm: {},
       isEditing: "",
-      onEditingFavIndex: 0,
-      onEditingFavParent: null,
-      limitNum: 6
+      lineLimit: 4,
+      openMethod: ""
     };
   },
   computed: {
     lineStyle() {
-      return { "grid-template-columns": `repeat(${this.limitNum}, 1fr)` }
+      return { "grid-template-columns": `repeat(${this.lineLimit}, 1fr)` };
     }
   },
   created() {
+    this.lineLimit = Number(getSetting()?.lineLimit || "4");
+    this.openMethod = getSetting()?.openMethod || "_blank";
     this.initBookmarks();
+    window.addEventListener("changeSetting", () => {
+      this.lineLimit = Number(getSetting().lineLimit);
+      this.bookmarks = getNavigationArray() || [];
+    });
   },
   methods: {
     initBookmarks() {
       this.bookmarks = getNavigationArray();
     },
     turnToTarget(target) {
-      window.open(target.href);
-    },
-    addNavigation() {
-      if (
-        this.bookmarks &&
-        this.bookmarks[0] &&
-        this.bookmarks[0].id === "mine"
-      ) {
-        this.bookmarks[0].children.push(this.navigationAddForm);
-      } else {
-        const mine = {
-          id: "mine",
-          name: "我的收藏",
-          ico: "icon-shoucang_huaban",
-          children: [this.navigationAddForm]
-        };
-        this.bookmarks.unshift(mine);
-      }
-      this.modelVisible = false;
-      this.navigationAddForm = {};
-      resetNavigationWithArray(this.bookmarks);
-      this.initBookmarks();
-      this.closeModel();
-    },
-    saveNavigation() {
-      this.$set(
-        this.onEditingFavParent.children,
-        this.onEditingFavIndex,
-        JSON.parse(JSON.stringify(this.navigationAddForm))
-      );
-      resetNavigationWithArray(this.bookmarks);
-      this.initBookmarks();
-      this.closeModel();
+      window.open(target.href, this.openMethod);
     },
     showCover(fav) {
       this.isEditing = this.isEditing === fav.name ? "" : fav.name;
     },
-    openModelOnAdd() {
-      this.isEditing = "";
-      this.modelVisible = true;
-    },
     openModelOnEdit(nav, fav, index) {
-      this.navigationAddForm = JSON.parse(JSON.stringify(fav));
-      this.onEditingFavIndex = index;
-      this.onEditingFavParent = nav;
-      this.modelVisible = true;
+      this.$emit("handle-edit", nav, JSON.parse(JSON.stringify(fav)), index);
+      this.isEditing = "";
     },
     handleDeleteNavigation(nav, fav, index) {
       this.bookmarks.forEach(item => {
@@ -192,16 +110,8 @@ export default {
         }
       });
       resetNavigationWithArray(this.bookmarks);
+      this.$emit("handle-delete", nav, JSON.parse(JSON.stringify(fav)), index);
       this.initBookmarks();
-    },
-    handleCancel() {
-      this.modelVisible = false;
-      this.isEditing = "";
-    },
-    closeModel() {
-      this.navigationAddForm = {};
-      this.modelVisible = false;
-      this.isEditing = "";
     }
   }
 };
@@ -212,50 +122,6 @@ export default {
   box-sizing: border-box;
   width: 100%;
   padding-bottom: 80vh;
-}
-.navigation-add__header {
-  height: 48px;
-  width: 100%;
-  text-align: center;
-  font-size: 20px;
-  line-height: 48px;
-}
-.navigation-add__form {
-  padding: 16px 16px 24px 16px;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-}
-.navigation-add__form label {
-  display: flex;
-  width: 100%;
-  align-items: center;
-}
-.navigation-add__form label span {
-  width: 100px;
-  text-align: right;
-  box-sizing: border-box;
-  padding-right: 8px;
-}
-.navigation-add__form input {
-  flex: 1;
-  height: 32px;
-  box-sizing: border-box;
-  padding: 0 16px;
-  border-radius: 4px;
-  border: 1px solid #eeeeee;
-  background: #eeeeee;
-}
-.navigation-add__form label + label {
-  margin-top: 16px;
-}
-.navigation-add__form input:hover {
-  border-color: #409eff;
-}
-.navigation-add__form input:focus {
-  border-color: #409eff;
-  outline: none;
 }
 .navigation-add {
   display: block;
@@ -283,28 +149,6 @@ export default {
 }
 .navigation-add__button:hover {
   background: #ffffff;
-}
-.model-button {
-  display: block;
-  border-radius: 2px;
-  box-sizing: border-box;
-  text-align: center;
-  font-size: 16px;
-  line-height: 32px;
-  color: #ffffff;
-  width: 64px;
-  height: 32px;
-  float: left;
-  cursor: pointer;
-}
-.model-button + .model-button {
-  margin-left: 16px;
-}
-.submit {
-  background: #f1404b;
-}
-.cancel {
-  background: #333333;
 }
 .navigation-title {
   width: 100%;
