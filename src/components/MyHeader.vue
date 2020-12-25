@@ -6,10 +6,7 @@
       @click="$emit('change-slider')"
     ></div>
     <div class="dark-mode">
-      <i
-        class="iconfont icon-shezhi_huaban"
-        @click="$emit('setting-click')"
-      ></i>
+      <i class="iconfont icon-shezhi_huaban" @click="$emit('setting-click')"></i>
     </div>
   </header>
 </template>
@@ -18,8 +15,8 @@
 export default {
   name: "MyHeader",
   props: {
-    mini: Boolean
-  }
+    mini: Boolean,
+  },
 };
 </script>
 

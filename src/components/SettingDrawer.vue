@@ -1,11 +1,5 @@
 <template>
-  <el-drawer
-    :visible.sync="settingVisible"
-    title="设置"
-    append-to-body
-    destroy-on-close
-    @close="closeModel"
-  >
+  <el-drawer :visible.sync="settingVisible" title="设置" append-to-body destroy-on-close @close="closeModel">
     <el-form :model="settingForm" label-width="100px">
       <el-form-item label="每行地址数：">
         <el-radio-group v-model="settingForm.lineLimit">
@@ -37,27 +31,24 @@
 
 <script>
 import { getSetting, setSetting } from "@/utils/setting";
-import {
-  getNavigationArray,
-  resetNavigationWithArray
-} from "@/utils/bookmarks";
+import { getNavigationArray, resetNavigationWithArray } from "@/utils/bookmarks";
 
 export default {
   name: "SettingDrawer",
   props: {
     visible: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   data() {
     return {
       settingForm: {
         lineLimit: "4",
-        openMethod: "_self"
+        openMethod: "_self",
       },
       settingVisible: false,
-      navigations: []
+      navigations: [],
     };
   },
   watch: {
@@ -66,7 +57,7 @@ export default {
       handler: function(newVal) {
         setSetting(newVal);
         window.dispatchEvent(this.$myEvent);
-      }
+      },
     },
     visible: {
       immediate: true,
@@ -76,8 +67,8 @@ export default {
           this.settingForm = getSetting() || {};
           this.navigations = getNavigationArray();
         }
-      }
-    }
+      },
+    },
   },
   created() {
     this.settingForm = getSetting() || {};
@@ -96,16 +87,14 @@ export default {
       if (type === "inner") {
         return draggingIsChild && !dropIsChild;
       } else {
-        return (
-          (draggingIsChild && dropIsChild) || (!draggingIsChild && !dropIsChild)
-        );
+        return (draggingIsChild && dropIsChild) || (!draggingIsChild && !dropIsChild);
       }
     },
     updateNavigation() {
       resetNavigationWithArray(this.navigations);
       window.dispatchEvent(this.$myEvent);
-    }
-  }
+    },
+  },
 };
 </script>
 

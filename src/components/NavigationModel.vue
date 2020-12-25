@@ -21,22 +21,22 @@ export default {
   props: {
     visible: {
       type: Boolean,
-      default: false
+      default: false,
     },
     width: {
       type: Number,
-      default: 600
+      default: 600,
     },
     appendToBody: {
       type: Boolean,
-      default: true
-    }
+      default: true,
+    },
   },
   computed: {
     bodyStyle() {
       let left = this.width / 2;
       return { width: `${this.width}px`, left: `calc(50% - ${left}px)` };
-    }
+    },
   },
   watch: {
     visible(val) {
@@ -49,13 +49,13 @@ export default {
       } else {
         if (!this.closed) this.$emit("close");
       }
-    }
+    },
   },
   methods: {
     closeModel() {
       this.$emit("update:visible", false);
       this.$emit("close");
-    }
+    },
   },
   mounted() {
     if (this.appendToBody) {
@@ -67,7 +67,7 @@ export default {
     if (this.appendToBody && this.$el && this.$el.parentNode) {
       this.$el.parentNode.removeChild(this.$el);
     }
-  }
+  },
 };
 </script>
 

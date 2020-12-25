@@ -6,11 +6,7 @@
       @change-slider="isMiniSlider = !isMiniSlider"
       @setting-click="settingVisible = !settingVisible"
     />
-    <div
-      ref="mainContainer"
-      class="main-container"
-      :class="{ 'full-container': isMiniSlider }"
-    >
+    <div ref="mainContainer" class="main-container" :class="{ 'full-container': isMiniSlider }">
       <search-box />
       <navigation-box @handle-edit="handleEditNavigation" />
       <setting-drawer :visible.sync="settingVisible" />
@@ -19,36 +15,23 @@
         <div class="navigation-add__header">
           {{ Object.keys(navigationAddForm).length ? "修改网址" : "添加网址" }}
         </div>
-        <div class="navigation-add__form">
-          <label>
-            <span>网站名称：</span>
-            <input
-              v-model="navigationAddForm.name"
-              placeholder="请输入网站名称"
-            />
-          </label>
-          <label>
-            <span>网站地址：</span>
-            <input
-              v-model="navigationAddForm.href"
-              placeholder="请输入网站地址"
-            />
-          </label>
-          <label>
-            <span>图标类型：</span>
-            <input
-              v-model="navigationAddForm.type"
-              placeholder="请输入图标类型"
-            />
-          </label>
-          <label>
-            <span>图标地址：</span>
-            <input
-              v-model="navigationAddForm.icon"
-              placeholder="请输入图标地址或类名"
-            />
-          </label>
-        </div>
+        <el-form :model="navigationAddForm" label-width="100px">
+          <el-form-item label="网站名称：">
+            <el-input v-model="navigationAddForm.name" placeholder="请输入网站名称" />
+          </el-form-item>
+          <el-form-item label="网站类别：">
+            <el-input v-model="navigationAddForm.name" placeholder="请输入网站名称"
+          /></el-form-item>
+          <el-form-item label="网站地址：">
+            <el-input v-model="navigationAddForm.href" placeholder="请输入网站地址"
+          /></el-form-item>
+          <el-form-item label="图标类型：">
+            <el-input v-model="navigationAddForm.type" placeholder="请输入图标类型"
+          /></el-form-item>
+          <el-form-item label="图标地址：">
+            <el-input v-model="navigationAddForm.icon" placeholder="请输入图标地址或类名"
+          /></el-form-item>
+        </el-form>
         <div slot="footer" style="width: max-content;">
           <div class="model-button submit" @click="saveNavigation">
             保 存
@@ -77,7 +60,7 @@ export default {
     NavigationModel,
     SearchBox,
     MySlider,
-    MyHeader
+    MyHeader,
   },
   data() {
     return {
@@ -86,7 +69,7 @@ export default {
       onEditingFavParent: null,
       isMiniSlider: true,
       settingVisible: false,
-      navigationAddForm: {}
+      navigationAddForm: {},
     };
   },
   methods: {
@@ -100,18 +83,14 @@ export default {
       this.modelVisible = true;
     },
     addNavigation() {
-      if (
-        this.bookmarks &&
-        this.bookmarks[0] &&
-        this.bookmarks[0].id === "mine"
-      ) {
+      if (this.bookmarks && this.bookmarks[0] && this.bookmarks[0].id === "mine") {
         this.bookmarks[0].children.push(this.navigationAddForm);
       } else {
         const mine = {
           id: "mine",
           name: "我的收藏",
           ico: "icon-shoucang_huaban",
-          children: [this.navigationAddForm]
+          children: [this.navigationAddForm],
         };
         this.bookmarks.unshift(mine);
       }
@@ -136,8 +115,8 @@ export default {
     },
     closeModel() {
       this.modelVisible = false;
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -171,43 +150,6 @@ body {
   text-align: center;
   font-size: 20px;
   line-height: 48px;
-}
-.navigation-add__form {
-  padding: 16px 16px 24px 16px;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-}
-.navigation-add__form label {
-  display: flex;
-  width: 100%;
-  align-items: center;
-}
-.navigation-add__form label span {
-  width: 100px;
-  text-align: right;
-  box-sizing: border-box;
-  padding-right: 8px;
-}
-.navigation-add__form input {
-  flex: 1;
-  height: 32px;
-  box-sizing: border-box;
-  padding: 0 16px;
-  border-radius: 4px;
-  border: 1px solid #eeeeee;
-  background: #eeeeee;
-}
-.navigation-add__form label + label {
-  margin-top: 16px;
-}
-.navigation-add__form input:hover {
-  border-color: #409eff;
-}
-.navigation-add__form input:focus {
-  border-color: #409eff;
-  outline: none;
 }
 .model-button {
   display: block;

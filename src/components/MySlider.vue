@@ -16,10 +16,7 @@
         </div>
         <div class="nav-classification-item__name">{{ i.name }}</div>
         <transition name="fade-left">
-          <div
-            class="nav-classification-item__tooltip"
-            v-if="mini && onHover === i.id"
-          >
+          <div class="nav-classification-item__tooltip" v-if="mini && onHover === i.id">
             <!--        <div class="nav-classification-item__tooltip" v-if="mini">-->
             <div class="nav-classification-item__tooltip-ico"></div>
             <div class="nav-classification-item__tooltip-body">
@@ -38,13 +35,13 @@ import { getNavigationArray } from "@/utils/bookmarks";
 export default {
   name: "MySlider",
   props: {
-    mini: Boolean
+    mini: Boolean,
   },
   data() {
     return {
       nav: [],
       selected: "",
-      onHover: ""
+      onHover: "",
     };
   },
   created() {
@@ -58,8 +55,8 @@ export default {
       let targetEl = document.getElementById(target.id);
       this.selected = target.id;
       this.$emit("scroll-top", targetEl.offsetTop);
-    }
-  }
+    },
+  },
 };
 </script>
 

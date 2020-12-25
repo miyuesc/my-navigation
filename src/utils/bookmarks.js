@@ -39,8 +39,6 @@ export function resetNavigationType(newTypeForm, typeId) {
 
 export function resetNavigationItem(newItemForm, typeId, index) {
   const bookmarksObject = getNavigation();
-  bookmarksObject[typeId].children[index] = JSON.parse(
-    JSON.stringify(newItemForm)
-  );
+  bookmarksObject[typeId].children[index] = JSON.parse(JSON.stringify(newItemForm));
   resetNavigation(bookmarksObject);
 }

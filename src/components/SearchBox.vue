@@ -2,12 +2,7 @@
   <div class="search-box">
     <div class="search-box__input">
       <label>
-        <input
-          v-model="searchInput"
-          placeholder="搜点儿什么吧！"
-          @input="changeInput"
-          @keyup.enter="searchResult"
-        />
+        <input v-model="searchInput" placeholder="搜点儿什么吧！" @input="changeInput" @keyup.enter="searchResult" />
       </label>
       <div class="search-input__button" @click.stop="searchResult">
         <i class="iconfont icon-search"></i>
@@ -39,9 +34,7 @@
     <div class="external-open__button" @click="openExternal = !openExternal">
       <i
         class="iconfont external-open__button-icon"
-        :class="
-          openExternal ? 'icon-quxiaoquanping_huaban' : 'icon-quanping_huaban'
-        "
+        :class="openExternal ? 'icon-quxiaoquanping_huaban' : 'icon-quanping_huaban'"
       ></i>
     </div>
     <div class="external-box" :class="{ 'is-opened': openExternal }"></div>
@@ -58,9 +51,9 @@ export default {
       searchEngine: {
         google: "https://www.google.com/search?q=",
         baidu: "https://www.baidu.com/s?wd=",
-        biying: "https://www.bing.com/search?q="
+        biying: "https://www.bing.com/search?q=",
       },
-      openExternal: false
+      openExternal: false,
     };
   },
   methods: {
@@ -69,8 +62,8 @@ export default {
     },
     searchResult() {
       window.open(`${this.searchEngine[this.engineType]}${this.searchInput}`);
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -159,6 +152,7 @@ export default {
   top: 50%;
   right: calc(50% - 292px);
   height: 40px;
+  line-height: 40px;
   width: 64px;
   background: #333333;
   border-radius: 4px;
@@ -167,5 +161,8 @@ export default {
   color: #f9f9f9;
   font-size: 24px;
   cursor: pointer;
+}
+.icon-search {
+  font-size: 20px;
 }
 </style>
