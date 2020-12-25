@@ -80,6 +80,7 @@ export default {
     window.addEventListener("NOSChange", () => {
       this.lineLimit = Number(getSetting().lineLimit);
       this.bookmarks = getNavigationArray() || [];
+      this.openMethod = getSetting()?.openMethod || "_blank";
     });
   },
   methods: {
