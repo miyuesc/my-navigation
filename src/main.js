@@ -12,7 +12,7 @@ import {
   Slider,
   Dialog,
   Drawer,
-  Tree
+  Tree,
 } from "element-ui";
 
 Vue.prototype.$ELEMENT = { size: "mini" };
@@ -38,5 +38,5 @@ if (window) {
 Vue.config.productionTip = false;
 
 new Vue({
-  render: h => h(App)
+  render: h => h(App),
 }).$mount("#app");

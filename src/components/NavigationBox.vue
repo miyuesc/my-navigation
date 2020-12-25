@@ -5,10 +5,14 @@
     </div>
     <div class="navigation-item" v-for="item in bookmarks" :key="item.id">
       <h4 :id="item.id"></h4>
-      <div class="navigation-title">
-        <i class="iconfont" :class="item.ico"></i>{{ item.name }}
-      </div>
-      <div class="navigation-item__body" :style="lineStyle">
+      <div class="navigation-title"><i class="iconfont" :class="item.ico"></i>{{ item.name }}</div>
+      <draggable
+        class="navigation-item__body"
+        :style="lineStyle"
+        :list="item.children"
+        group="navigation"
+        @change="dragChange"
+      >
         <div
           class="favorite-item"
           v-for="(fi, fIndex) in item.children"
@@ -20,12 +24,7 @@
             <div v-if="!fi.type" class="favorite-item__icon-text">
               {{ fi.name.substring(0, 1) }}
             </div>
-            <img
-              v-if="fi.type === 'image'"
-              class="favorite-item__icon-img"
-              :src="fi.icon"
-              alt=""
-            />
+            <img v-if="fi.type === 'image'" class="favorite-item__icon-img" :src="fi.icon" alt="" />
             <svg v-if="fi.type === 'icon'" class="iconfont" aria-hidden="true">
               <use v-bind="{ 'xlink:href': `#${fi.icon}` }"></use>
             </svg>
@@ -33,16 +32,8 @@
           <div class="favorite-item__title">{{ fi.name }}</div>
           <div class="favorite-item__href">{{ fi.href }}</div>
           <transition name="cover">
-            <div
-              class="favorite-item__cover"
-              :key="fi.name + '_cover'"
-              v-show="isEditing === fi.name"
-              @click.stop
-            >
-              <div
-                class="favorite-item__button favorite-item__edit"
-                @click.stop="openModelOnEdit(item, fi, fIndex)"
-              >
+            <div class="favorite-item__cover" :key="fi.name + '_cover'" v-show="isEditing === fi.name" @click.stop>
+              <div class="favorite-item__button favorite-item__edit" @click.stop="openModelOnEdit(item, fi, fIndex)">
                 <i class="iconfont icon-bianji_huaban"></i>
               </div>
               <div
@@ -54,31 +45,33 @@
             </div>
           </transition>
         </div>
-      </div>
+      </draggable>
     </div>
   </div>
 </template>
 
 <script>
-import {
-  getNavigationArray,
-  resetNavigationWithArray
-} from "@/utils/bookmarks";
+import draggable from "vuedraggable";
+import { getNavigationArray, resetNavigationWithArray } from "@/utils/bookmarks";
 import { getSetting } from "@/utils/setting";
+
 export default {
   name: "NavigationBox",
+  components: {
+    draggable,
+  },
   data() {
     return {
       bookmarks: [],
       isEditing: "",
       lineLimit: 4,
-      openMethod: ""
+      openMethod: "",
     };
   },
   computed: {
     lineStyle() {
       return { "grid-template-columns": `repeat(${this.lineLimit}, 1fr)` };
-    }
+    },
   },
   created() {
     this.lineLimit = Number(getSetting()?.lineLimit || "4");
@@ -112,8 +105,14 @@ export default {
       resetNavigationWithArray(this.bookmarks);
       this.$emit("handle-delete", nav, JSON.parse(JSON.stringify(fav)), index);
       this.initBookmarks();
-    }
-  }
+    },
+    dragChange() {
+      this.$nextTick(() => {
+        resetNavigationWithArray(this.bookmarks);
+        window.dispatchEvent(this.$myEvent);
+      });
+    },
+  },
 };
 </script>
 
