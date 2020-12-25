@@ -1,6 +1,6 @@
 <template>
   <transition name="opacity">
-    <div class="navigation-model" v-show="visible" @click.self="closeModel">
+    <div class="navigation-model" v-if="visible" @click.self="closeModel">
       <transition name="trans">
         <div class="navigation-model__content" :style="bodyStyle">
           <div class="navigation-model__body">
@@ -78,7 +78,7 @@ export default {
   right: 0;
   bottom: 0;
   left: 0;
-  background: rgba(130, 130, 130, 0.4);
+  background: rgba(130, 130, 130, 0.68);
   backdrop-filter: blur(2px);
   z-index: 2000;
 }
@@ -95,6 +95,8 @@ export default {
 .navigation-model__body {
   flex: 1;
   width: 100%;
+  box-sizing: border-box;
+  padding: 0 16px;
 }
 .navigation-model__footer {
   height: 48px;

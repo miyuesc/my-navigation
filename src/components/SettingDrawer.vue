@@ -10,6 +10,12 @@
           <el-radio label="8">8</el-radio>
         </el-radio-group>
       </el-form-item>
+      <el-form-item label="侧边栏样式：">
+        <el-radio-group v-model="settingForm.miniSlider">
+          <el-radio :label="true">迷你</el-radio>
+          <el-radio :label="false">展开</el-radio>
+        </el-radio-group>
+      </el-form-item>
       <el-form-item label="打开方式：">
         <el-radio-group v-model="settingForm.openMethod">
           <el-radio label="_self">当前标签页</el-radio>
@@ -46,6 +52,7 @@ export default {
       settingForm: {
         lineLimit: "4",
         openMethod: "_self",
+        miniSlider: true,
       },
       settingVisible: false,
       navigations: [],

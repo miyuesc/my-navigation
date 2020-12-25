@@ -77,7 +77,7 @@ export default {
     this.lineLimit = Number(getSetting()?.lineLimit || "4");
     this.openMethod = getSetting()?.openMethod || "_blank";
     this.initBookmarks();
-    window.addEventListener("changeSetting", () => {
+    window.addEventListener("NOSChange", () => {
       this.lineLimit = Number(getSetting().lineLimit);
       this.bookmarks = getNavigationArray() || [];
     });
@@ -104,6 +104,7 @@ export default {
       });
       resetNavigationWithArray(this.bookmarks);
       this.$emit("handle-delete", nav, JSON.parse(JSON.stringify(fav)), index);
+      window.dispatchEvent(this.$myEvent);
       this.initBookmarks();
     },
     dragChange() {

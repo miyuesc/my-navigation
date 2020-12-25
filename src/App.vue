@@ -8,29 +8,38 @@
     />
     <div ref="mainContainer" class="main-container" :class="{ 'full-container': isMiniSlider }">
       <search-box />
-      <navigation-box @handle-edit="handleEditNavigation" />
+      <navigation-box @handle-edit="handleEditNavigation" @handle-add="handleEditNavigation({}, {}, -1)" />
       <setting-drawer :visible.sync="settingVisible" />
 
       <navigation-model :visible.sync="modelVisible" @close="closeModel">
         <div class="navigation-add__header">
           {{ Object.keys(navigationAddForm).length ? "修改网址" : "添加网址" }}
         </div>
-        <el-form :model="navigationAddForm" label-width="100px">
+        <el-form :model="navigationAddForm" label-width="90px">
           <el-form-item label="网站名称：">
             <el-input v-model="navigationAddForm.name" placeholder="请输入网站名称" />
           </el-form-item>
           <el-form-item label="网站类别：">
-            <el-input v-model="navigationAddForm.name" placeholder="请输入网站名称"
-          /></el-form-item>
+            <el-select v-model="navigationAddForm.parentId" placeholder="请选择网站类别">
+              <el-option v-for="i in bookmarks" :key="i.id" :label="i.name" :value="i.id" />
+            </el-select>
+          </el-form-item>
           <el-form-item label="网站地址：">
-            <el-input v-model="navigationAddForm.href" placeholder="请输入网站地址"
-          /></el-form-item>
+            <el-input v-model="navigationAddForm.href" placeholder="请输入网站地址" />
+          </el-form-item>
           <el-form-item label="图标类型：">
-            <el-input v-model="navigationAddForm.type" placeholder="请输入图标类型"
-          /></el-form-item>
-          <el-form-item label="图标地址：">
-            <el-input v-model="navigationAddForm.icon" placeholder="请输入图标地址或类名"
-          /></el-form-item>
+            <el-select v-model="navigationAddForm.type" placeholder="请选择图标类型">
+              <el-option label="图片" value="image" />
+              <el-option label="字体图标" value="icon" />
+              <el-option label="无" value="" />
+            </el-select>
+          </el-form-item>
+          <el-form-item
+            v-show="!!navigationAddForm.type"
+            :label="navigationAddForm.type === 'image' ? '图标地址：' : '图标类名：'"
+          >
+            <el-input v-model="navigationAddForm.icon" placeholder="请输入图标地址或类名" />
+          </el-form-item>
         </el-form>
         <div slot="footer" style="width: max-content;">
           <div class="model-button submit" @click="saveNavigation">
@@ -50,7 +59,8 @@ import SearchBox from "@/components/SearchBox";
 import NavigationBox from "@/components/NavigationBox";
 import NavigationModel from "@/components/NavigationModel";
 import SettingDrawer from "@/components/SettingDrawer";
-import { resetNavigationWithArray } from "@/utils/bookmarks";
+import { getNavigationArray, resetNavigationWithArray } from "@/utils/bookmarks";
+import { getSetting } from "@/utils/setting";
 
 export default {
   name: "App",
@@ -67,47 +77,62 @@ export default {
       modelVisible: false,
       onEditingFavIndex: 0,
       onEditingFavParent: null,
-      isMiniSlider: true,
       settingVisible: false,
       navigationAddForm: {},
+      bookmarks: [],
+      isMiniSlider: true,
     };
+  },
+  created() {
+    this.bookmarks = getNavigationArray();
+    this.isMiniSlider = getSetting().miniSlider;
+    window.addEventListener("NOSChange", () => {
+      this.lineLimit = Number(getSetting().lineLimit);
+      this.bookmarks = getNavigationArray() || [];
+      this.isMiniSlider = getSetting().miniSlider;
+    });
   },
   methods: {
     scrollToTargetType(top) {
       this.$refs.mainContainer.scrollTo({ top: top - 64, behavior: "smooth" });
     },
     handleEditNavigation(nav, fav, index) {
-      this.navigationAddForm = JSON.parse(JSON.stringify(fav));
+      this.navigationAddForm = { ...fav, parentId: nav.id };
       this.onEditingFavIndex = index;
       this.onEditingFavParent = nav;
       this.modelVisible = true;
     },
-    addNavigation() {
-      if (this.bookmarks && this.bookmarks[0] && this.bookmarks[0].id === "mine") {
-        this.bookmarks[0].children.push(this.navigationAddForm);
-      } else {
-        const mine = {
-          id: "mine",
-          name: "我的收藏",
-          ico: "icon-shoucang_huaban",
-          children: [this.navigationAddForm],
-        };
-        this.bookmarks.unshift(mine);
-      }
-      this.modelVisible = false;
-      this.navigationAddForm = {};
-      resetNavigationWithArray(this.bookmarks);
-      // this.initBookmarks();
-      this.closeModel();
-    },
     saveNavigation() {
-      this.$set(
-        this.onEditingFavParent.children,
-        this.onEditingFavIndex,
-        JSON.parse(JSON.stringify(this.navigationAddForm))
-      );
+      // 新增
+      if (this.onEditingFavIndex === -1) {
+        this.bookmarks.map(nav => {
+          if (nav.id === this.navigationAddForm.parentId) {
+            nav.children.push({ ...this.navigationAddForm });
+          }
+        });
+      } else {
+        // 未改变父级类型
+        if (this.navigationAddForm.parentId === this.onEditingFavParent.id) {
+          this.bookmarks.map(nav => {
+            if (nav.id === this.navigationAddForm.parentId) {
+              this.$set(nav.children, this.onEditingFavIndex, {...this.navigationAddForm});
+            }
+          });
+        } else {
+          // 改变父级类型
+          this.onEditingFavParent.children.splice(this.onEditingFavIndex, 1);
+          this.bookmarks.map(nav => {
+            if (nav.id === this.onEditingFavParent.id) {
+              nav.children.splice(this.onEditingFavIndex, 1);
+            }
+            if (nav.id === this.navigationAddForm.parentId) {
+              nav.children.push({ ...this.navigationAddForm });
+            }
+          });
+        }
+      }
       resetNavigationWithArray(this.bookmarks);
-      // this.initBookmarks();
+      window.dispatchEvent(this.$myEvent);
       this.closeModel();
     },
     handleCancel() {
@@ -115,6 +140,7 @@ export default {
     },
     closeModel() {
       this.modelVisible = false;
+      this.onEditingFavParent = {};
     },
   },
 };

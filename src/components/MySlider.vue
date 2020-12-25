@@ -17,7 +17,6 @@
         <div class="nav-classification-item__name">{{ i.name }}</div>
         <transition name="fade-left">
           <div class="nav-classification-item__tooltip" v-if="mini && onHover === i.id">
-            <!--        <div class="nav-classification-item__tooltip" v-if="mini">-->
             <div class="nav-classification-item__tooltip-ico"></div>
             <div class="nav-classification-item__tooltip-body">
               {{ i.name }}
@@ -46,7 +45,7 @@ export default {
   },
   created() {
     this.nav = getNavigationArray();
-    window.addEventListener("changeSetting", () => {
+    window.addEventListener("NOSChange", () => {
       this.nav = getNavigationArray() || [];
     });
   },

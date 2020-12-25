@@ -7,6 +7,8 @@ import {
   InputNumber,
   Radio,
   RadioGroup,
+  Select,
+  Option,
   Form,
   FormItem,
   Slider,
@@ -21,6 +23,8 @@ Vue.use(Input);
 Vue.use(InputNumber);
 Vue.use(Radio);
 Vue.use(RadioGroup);
+Vue.use(Select);
+Vue.use(Option);
 Vue.use(Form);
 Vue.use(FormItem);
 Vue.use(Slider);
@@ -32,7 +36,7 @@ import "element-ui/lib/theme-chalk/index.css";
 import "./assets/overrider.css";
 
 if (window) {
-  Vue.prototype.$myEvent = new Event("changeSetting");
+  Vue.prototype.$myEvent = new Event("NOSChange");
 }
 
 Vue.config.productionTip = false;

@@ -3,11 +3,7 @@ span:focus,
 section:focus {
   outline: none;
 }
-.el-drawer__body {
-  box-sizing: border-box;
-  padding: 0 16px;
-  overflow-y: scroll;
-}
+
 div,
 span,
 p,
@@ -17,4 +13,14 @@ li,
 input {
   font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial,
     sans-serif;
+}
+
+.el-drawer__body {
+  box-sizing: border-box;
+  padding: 0 16px;
+  overflow-y: scroll;
+}
+
+.el-select {
+  width: 100%;
 }

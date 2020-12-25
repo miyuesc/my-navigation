@@ -31,12 +31,12 @@
         必应
       </div>
     </div>
-    <div class="external-open__button" @click="openExternal = !openExternal">
-      <i
-        class="iconfont external-open__button-icon"
-        :class="openExternal ? 'icon-quxiaoquanping_huaban' : 'icon-quanping_huaban'"
-      ></i>
-    </div>
+    <!--    <div class="external-open__button" @click="openExternal = !openExternal">-->
+    <!--      <i-->
+    <!--        class="iconfont external-open__button-icon"-->
+    <!--        :class="openExternal ? 'icon-quxiaoquanping_huaban' : 'icon-quanping_huaban'"-->
+    <!--      ></i>-->
+    <!--    </div>-->
     <div class="external-box" :class="{ 'is-opened': openExternal }"></div>
   </div>
 </template>
