@@ -11,8 +11,10 @@
         @mouseenter="onHover = i.id"
         @mouseleave="onHover = ''"
       >
-        <div class="nav-classification-item__ico">
-          <i class="iconfont" :class="i.ico"></i>
+        <div class="nav-classification-item__icon">
+          <svg class="iconfont" aria-hidden="true">
+            <use v-bind="{ 'xlink:href': `#${i.icon}` }"></use>
+          </svg>
         </div>
         <div class="nav-classification-item__name">{{ i.name }}</div>
         <transition name="fade-left">
@@ -143,9 +145,9 @@ export default {
   display: inline-flex;
   align-items: center;
 }
-.nav-classification-item__tooltip-ico {
-  width: 0;
-  height: 0;
+.nav-classification-item__icon {
+  width: 20px;
+  height: 20px;
   border: 6px solid transparent;
   border-right: 6px solid #ffffff;
 }

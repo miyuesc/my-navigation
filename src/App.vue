@@ -40,12 +40,44 @@
           >
             <el-input v-model="navigationAddForm.icon" placeholder="请输入图标地址或类名" />
           </el-form-item>
+
+          <el-form-item label-width="0">
+            <p class="add-type-message">没有合适的分类? <a @click="openTypeModel">添加分类</a></p>
+          </el-form-item>
         </el-form>
         <div slot="footer" style="width: max-content;">
           <div class="model-button submit" @click="saveNavigation">
             保 存
           </div>
           <div class="model-button cancel" @click="handleCancel">取 消</div>
+        </div>
+      </navigation-model>
+
+      <navigation-model :visible.sync="typeModelVisible" @close="closeTypeModel">
+        <div class="navigation-add__header">添加分类</div>
+        <el-form :model="navigationTypeForm" label-width="90px">
+          <el-form-item label="分类名称：">
+            <el-input v-model="navigationTypeForm.name" placeholder="请输入分类名称" />
+          </el-form-item>
+          <el-form-item label="分类ID：">
+            <el-input v-model="navigationTypeForm.id" placeholder="请输入分类ID" />
+          </el-form-item>
+          <el-form-item label="分类图标：">
+            <el-select v-model="navigationTypeForm.icon" placeholder="请选择分类icon" >
+              <el-option v-for="i in typeIconList" :key="i" :value="i">
+                <svg class="option-icon iconfont" aria-hidden="true">
+                  <use v-bind="{ 'xlink:href': `#${i}` }"></use>
+                </svg>
+                <span style="margin-left: 16px">{{ i }}</span>
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" style="width: max-content;">
+          <div class="model-button submit" @click="saveNavigationType">
+            保 存
+          </div>
+          <div class="model-button cancel" @click="closeTypeModel">取 消</div>
         </div>
       </navigation-model>
     </div>
@@ -75,12 +107,32 @@ export default {
   data() {
     return {
       modelVisible: false,
+      typeModelVisible: false,
       onEditingFavIndex: 0,
       onEditingFavParent: null,
       settingVisible: false,
       navigationAddForm: {},
+      navigationTypeForm: {},
       bookmarks: [],
       isMiniSlider: true,
+      typeIconList: [
+          "icon-wendang",
+          "icon-html5",
+          "icon-sucai",
+          "icon-node-js",
+          "icon-vuejs-alt",
+          "icon-work",
+          "icon-reactjs-line",
+          "icon-javascript",
+          "icon-shequ",
+          "icon-language",
+          "icon-tupian_huaban",
+          "icon-youxiang_huaban",
+          "icon-shezhi_huaban",
+          "icon-xihuan_huaban",
+          "icon-shoucang_huaban",
+          "icon-quanbu_huaban",
+      ]
     };
   },
   created() {
@@ -135,6 +187,17 @@ export default {
       window.dispatchEvent(this.$myEvent);
       this.closeModel();
     },
+    saveNavigationType() {
+      this.bookmarks.push({...this.navigationTypeForm, children: []});
+      resetNavigationWithArray(this.bookmarks);
+      window.dispatchEvent(this.$myEvent);
+      this.closeTypeModel();
+    },
+    openTypeModel() {
+      this.modelVisible = false;
+      this.onEditingFavParent = {};
+      this.typeModelVisible = true;
+    },
     handleCancel() {
       this.modelVisible = false;
     },
@@ -142,6 +205,11 @@ export default {
       this.modelVisible = false;
       this.onEditingFavParent = {};
     },
+    closeTypeModel() {
+      this.typeModelVisible = false;
+      this.modelVisible = false;
+      this.onEditingFavParent = {};
+    }
   },
 };
 </script>
@@ -199,7 +267,29 @@ body {
 .cancel {
   background: #333333;
 }
-
+.add-type-message {
+  font-size: 10px;
+  color: #cccccc;
+  display: inline-block;
+  padding: 0 8px;
+}
+.add-type-message a {
+  transition: all ease 0.2s;
+  text-decoration: underline;
+}
+.add-type-message a:hover {
+  cursor: pointer;
+  color: #2a7aff;
+  transition: all ease 0.2s;
+}
+.option-icon {
+  width: 20px;
+  height: 20px;
+  transform: translateY(25%);
+}
+.el-select-dropdown__item.hover {
+  color: #2a7aff;
+}
 .opacity-leave-active {
   transition: all ease 0.4s;
 }

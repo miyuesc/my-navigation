@@ -5,7 +5,9 @@
         <input v-model="searchInput" placeholder="搜点儿什么吧！" @input="changeInput" @keyup.enter="searchResult" />
       </label>
       <div class="search-input__button" @click.stop="searchResult">
-        <i class="iconfont icon-search"></i>
+          <svg class="iconfont" aria-hidden="true">
+            <use v-bind="{ 'xlink:href': '#icon-sousuo_huaban' }"></use>
+          </svg>
       </div>
     </div>
     <div class="search-target-engine">
@@ -161,6 +163,9 @@ export default {
   color: #f9f9f9;
   font-size: 24px;
   cursor: pointer;
+}
+.search-input__button .iconfont {
+  color: #f9f9f9;
 }
 .icon-search {
   font-size: 20px;

@@ -5,8 +5,10 @@
       :class="mini ? 'icon-indent' : 'icon-outdent'"
       @click="$emit('change-slider')"
     ></div>
-    <div class="dark-mode">
-      <i class="iconfont icon-shezhi_huaban" @click="$emit('setting-click')"></i>
+    <div class="dark-mode" @click="$emit('setting-click')">
+      <svg class="iconfont" aria-hidden="true">
+        <use v-bind="{ 'xlink:href': '#icon-shezhi_huaban' }"></use>
+      </svg>
     </div>
   </header>
 </template>
@@ -53,9 +55,11 @@ export default {
   width: 64px;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
 }
 .dark-mode .iconfont {
-  font-size: 20px;
+  height: 20px;
+  width: 20px;
   cursor: pointer;
 }
 </style>

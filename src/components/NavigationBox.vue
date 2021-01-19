@@ -5,7 +5,12 @@
     </div>
     <div class="navigation-item" v-for="item in bookmarks" :key="item.id">
       <h4 :id="item.id"></h4>
-      <div class="navigation-title"><i class="iconfont" :class="item.ico"></i>{{ item.name }}</div>
+      <div class="navigation-title">
+        <svg class="iconfont navigation-title-icon" aria-hidden="true">
+          <use v-bind="{ 'xlink:href': `#${item.icon}` }"></use>
+        </svg>
+        <span style="display: inline-block; margin-left: 8px">{{ item.name }}</span>
+      </div>
       <draggable
         class="navigation-item__body"
         :style="lineStyle"
@@ -35,12 +40,17 @@
             <div class="favorite-item__cover" :key="fi.name + '_cover'" v-show="isEditing === fi.name" @click.stop>
               <div class="favorite-item__button favorite-item__edit" @click.stop="openModelOnEdit(item, fi, fIndex)">
                 <i class="iconfont icon-bianji_huaban"></i>
+                <svg class="iconfont" aria-hidden="true">
+                  <use v-bind="{ 'xlink:href': 'icon-bianji_huaban' }"></use>
+                </svg>
               </div>
               <div
                 class="favorite-item__button favorite-item__delete"
                 @click.stop="handleDeleteNavigation(item, fi, fIndex)"
               >
-                <i class="iconfont icon-huishouzhan_huaban"></i>
+                <svg class="iconfont" aria-hidden="true">
+                  <use v-bind="{ 'xlink:href': 'icon-huishouzhan_huaban' }"></use>
+                </svg>
               </div>
             </div>
           </transition>
@@ -156,6 +166,10 @@ export default {
   height: 64px;
   display: inline-flex;
   align-items: center;
+}
+.navigation-title-icon {
+  width: 20px;
+  height: 20px;
 }
 .navigation-title > * {
   font-size: 18px;
