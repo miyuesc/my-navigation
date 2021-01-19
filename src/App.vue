@@ -63,9 +63,9 @@
             <el-input v-model="navigationTypeForm.id" placeholder="请输入分类ID" />
           </el-form-item>
           <el-form-item label="分类图标：">
-            <el-select v-model="navigationTypeForm.icon" placeholder="请选择分类icon" >
+            <el-select v-model="navigationTypeForm.icon" placeholder="请选择分类icon" filterable allow-create>
               <el-option v-for="i in typeIconList" :key="i" :value="i">
-                <svg class="option-icon iconfont" aria-hidden="true">
+                <svg class="iconfont option-icon" aria-hidden="true">
                   <use v-bind="{ 'xlink:href': `#${i}` }"></use>
                 </svg>
                 <span style="margin-left: 16px">{{ i }}</span>
@@ -129,7 +129,6 @@ export default {
           "icon-tupian_huaban",
           "icon-youxiang_huaban",
           "icon-shezhi_huaban",
-          "icon-xihuan_huaban",
           "icon-shoucang_huaban",
           "icon-quanbu_huaban",
       ]
@@ -283,8 +282,8 @@ body {
   transition: all ease 0.2s;
 }
 .option-icon {
-  width: 20px;
-  height: 20px;
+  width: 20px !important;
+  height: 20px !important;
   transform: translateY(25%);
 }
 .el-select-dropdown__item.hover {
