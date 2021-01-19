@@ -1,10 +1,14 @@
 <template>
   <header class="my-header" :class="{ 'is-full': mini }">
     <div
-      class="slider-control iconfont"
+      class="slider-control"
       :class="mini ? 'icon-indent' : 'icon-outdent'"
       @click="$emit('change-slider')"
-    ></div>
+    >
+      <svg class="iconfont" aria-hidden="true">
+        <use v-bind="{ 'xlink:href': '#icon-toggle-left' }"></use>
+      </svg>
+    </div>
     <div class="dark-mode" @click="$emit('setting-click')">
       <svg class="iconfont" aria-hidden="true">
         <use v-bind="{ 'xlink:href': '#icon-shezhi_huaban' }"></use>
@@ -29,6 +33,7 @@ export default {
   right: 0;
   left: 0;
   display: inline-flex;
+  align-items: center;
   justify-content: space-between;
   height: 64px;
   padding-left: 240px;
@@ -41,14 +46,15 @@ export default {
   padding-left: 64px;
 }
 .slider-control {
-  width: 64px;
-  height: 64px;
-  line-height: 64px;
+  width: 20px;
+  height: 20px;
   text-align: center;
+  padding-left: 20px;
   color: #cccccc;
-}
-.slider-control {
   cursor: pointer;
+}
+.slider-control.icon-indent .iconfont {
+  transform: rotateY(180deg);
 }
 .dark-mode {
   height: 64px;
@@ -57,7 +63,9 @@ export default {
   align-items: center;
   justify-content: center;
 }
+.slider-control .iconfont,
 .dark-mode .iconfont {
+  transition:  all ease 0.2s;
   height: 20px;
   width: 20px;
   cursor: pointer;

@@ -19,6 +19,7 @@
         <div class="nav-classification-item__name">{{ i.name }}</div>
         <transition name="fade-left">
           <div class="nav-classification-item__tooltip" v-if="mini && onHover === i.id">
+<!--          <div class="nav-classification-item__tooltip">-->
             <div class="nav-classification-item__tooltip-ico"></div>
             <div class="nav-classification-item__tooltip-body">
               {{ i.name }}
@@ -136,7 +137,7 @@ export default {
 }
 .nav-classification-item__tooltip {
   position: absolute;
-  right: 6px;
+  right: -16px;
   top: 0;
   bottom: 0;
   box-sizing: border-box;
@@ -145,11 +146,22 @@ export default {
   display: inline-flex;
   align-items: center;
 }
+.nav-classification-item__tooltip:before {
+  content: "";
+  display: block;
+  width: 0;
+  height: 0;
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%) translateX(-100%);
+  border: 8px solid transparent;
+  border-right-color: #ffffff;
+}
 .nav-classification-item__icon {
   width: 20px;
   height: 20px;
   border: 6px solid transparent;
-  border-right: 6px solid #ffffff;
 }
 .nav-classification-item__tooltip-body {
   background: #ffffff;

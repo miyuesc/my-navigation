@@ -39,9 +39,8 @@
           <transition name="cover">
             <div class="favorite-item__cover" :key="fi.name + '_cover'" v-show="isEditing === fi.name" @click.stop>
               <div class="favorite-item__button favorite-item__edit" @click.stop="openModelOnEdit(item, fi, fIndex)">
-                <i class="iconfont icon-bianji_huaban"></i>
                 <svg class="iconfont" aria-hidden="true">
-                  <use v-bind="{ 'xlink:href': 'icon-bianji_huaban' }"></use>
+                  <use v-bind="{ 'xlink:href': '#icon-edit' }"></use>
                 </svg>
               </div>
               <div
@@ -49,7 +48,7 @@
                 @click.stop="handleDeleteNavigation(item, fi, fIndex)"
               >
                 <svg class="iconfont" aria-hidden="true">
-                  <use v-bind="{ 'xlink:href': 'icon-huishouzhan_huaban' }"></use>
+                  <use v-bind="{ 'xlink:href': '#icon-ashbin' }"></use>
                 </svg>
               </div>
             </div>
@@ -271,10 +270,7 @@ export default {
   height: 24px;
   border: 4px solid #eeeeee;
   cursor: pointer;
-  transition: all ease 0.1s;
-}
-.favorite-item__button .iconfont {
-  font-size: 24px;
+  transition: border-color ease 0.4s;
 }
 .favorite-item__edit:hover {
   color: #f48a40;
