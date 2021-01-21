@@ -1,0 +1,19 @@
+{
+   "browser_action": {
+   },
+   "chrome_url_overrides": {
+      "newtab": "index.html"
+   },
+   "description": "支持自定义新标签页的 Chrome 扩展。",
+   "icons": {
+      "128": "./logo.png",
+      "16": "./logo.png",
+      "32": "./logo.png",
+      "48": "./logo.png"
+   },
+   "manifest_version": 2,
+   "name": "MiyueFE",
+   "permissions": [ "storage", "tabs" ],
+   "content_security_policy": "script-src 'self' https://at.alicdn.com; object-src 'self'",
+   "version": "0.0.1"
+}
